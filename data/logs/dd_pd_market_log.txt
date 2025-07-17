@@ -1,0 +1,262 @@
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1407
+no_debt            16
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1407.000000
+mean       59.972269
+std        23.672764
+min         7.778971
+25%        42.832570
+50%        58.185952
+75%        72.818121
+max       189.714858
+
+Probability of Default (PDm) summary:
+count    1.407000e+03
+mean     2.598323e-18
+std      9.746309e-17
+min      0.000000e+00
+25%      0.000000e+00
+50%      0.000000e+00
+75%      0.000000e+00
+max      3.655840e-15
+
+Rows with missing DDm: 18
+Rows with missing PDm: 18
+
+
+=== CRITICAL FIX APPLIED Wed Jul  9 07:08:32 CEST 2025 ===
+ISSUE: Unit mismatch between market_cap (USD) and debt_total (USD millions)
+IMPACT: 80.8% of PDm values were 0 due to numerical underflow from DDm > 100
+SOLUTION: Updated merton_solver to convert debt_total * 1,000,000 to actual USD
+
+RESULTS BEFORE FIX:
+- PDm = 0 count: 1152/1425 (80.8%)  
+- DDm > 100 count: 76
+- DDm max: 189.7, mean: 60.0
+
+RESULTS AFTER FIX:
+- PDm = 0 count: 3/1425 (0.2%)
+- DDm > 100 count: 0  
+- DDm max: 49.9, mean: 7.9
+
+The DDm and PDm values are now realistic and usable for modeling.
+Files updated: dd_pd_market.ipynb, dd_pd_market.csv
+
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1406
+no_debt            16
+missing_input       2
+no_converge         1
+
+Distance to Default (DDm) summary:
+count    1406.000000
+mean       11.662988
+std         6.733814
+min        -0.006617
+25%         7.279646
+50%        10.630183
+75%        14.545066
+max        54.372833
+
+Probability of Default (PDm) summary:
+count    1.406000e+03
+mean     6.568425e-04
+std      1.380026e-02
+min      0.000000e+00
+25%      3.182075e-48
+50%      1.085784e-26
+75%      1.673495e-13
+max      5.026399e-01
+
+Rows with missing DDm: 19
+Rows with missing PDm: 19
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Warning: solver_status column not found in DataFrame
+
+Warning: DDm column not found in DataFrame
+
+Warning: PDm column not found in DataFrame
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Warning: solver_status column not found in DataFrame
+
+Warning: DDm column not found in DataFrame
+
+Warning: PDm column not found in DataFrame
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1405
+no_debt            16
+no_converge         2
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1405.000000
+mean        7.927959
+std         4.805688
+min        -0.111292
+25%         4.971803
+50%         7.048713
+75%         9.504485
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.405000e+03
+mean     1.342132e-03
+std      1.576264e-02
+min      0.000000e+00
+25%      1.005201e-21
+50%      9.029019e-13
+75%      3.316655e-07
+max      5.443075e-01
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1405
+no_debt            16
+no_converge         2
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1405.000000
+mean        7.927959
+std         4.805688
+min        -0.111292
+25%         4.971803
+50%         7.048713
+75%         9.504485
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.405000e+03
+mean     1.342132e-03
+std      1.576264e-02
+min      0.000000e+00
+25%      1.005201e-21
+50%      9.029019e-13
+75%      3.316655e-07
+max      5.443075e-01
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1405
+no_debt            16
+no_converge         2
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1405.000000
+mean        7.927959
+std         4.805688
+min        -0.111292
+25%         4.971803
+50%         7.048713
+75%         9.504485
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.405000e+03
+mean     1.342132e-03
+std      1.576264e-02
+min      0.000000e+00
+25%      1.005201e-21
+50%      9.029019e-13
+75%      3.316655e-07
+max      5.443075e-01
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1405
+no_debt            16
+no_converge         2
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1405.000000
+mean        7.927959
+std         4.805688
+min        -0.111292
+25%         4.971803
+50%         7.048713
+75%         9.504485
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.405000e+03
+mean     1.342132e-03
+std      1.576264e-02
+min      0.000000e+00
+25%      1.005201e-21
+50%      9.029019e-13
+75%      3.316655e-07
+max      5.443075e-01
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1405
+no_debt            16
+no_converge         2
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1405.000000
+mean        7.927959
+std         4.805688
+min        -0.111292
+25%         4.971803
+50%         7.048713
+75%         9.504485
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.405000e+03
+mean     1.342132e-03
+std      1.576264e-02
+min      0.000000e+00
+25%      1.005201e-21
+50%      9.029019e-13
+75%      3.316655e-07
+max      5.443075e-01
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
