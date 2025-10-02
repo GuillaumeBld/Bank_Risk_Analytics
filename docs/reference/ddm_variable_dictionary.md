@@ -1,4 +1,4 @@
-# DDm Variable Dictionary
+       # DDm Variable Dictionary
 
 The Distance to Default metric (DDm) tells us how many "volatility-sized steps" separate a company's current asset value from
 the level of debt that would mean default. Put differently, it measures the cushion a firm has before creditors would no longer
@@ -8,9 +8,9 @@ be repaid.
 
 In the market notebook, DDm is computed with the classic Merton distance-to-default equation:
 
-```
-DDm = [ln(V / F) + (r_f - 0.5 * sigma_V^2) * T] / (sigma_V * √T)
-```
+$$
+DDm = \frac{\ln\left(\tfrac{V}{F}\right) + (r_f - 0.5 \sigma_V^2) T}{\sigma_V \sqrt{T}}
+$$
 
 Where each symbol means:
 
@@ -34,12 +34,18 @@ are the targets that the solver tries to satisfy:
    ```
    E = V * N(d₁) - F * e^{-r_f T} * N(d₂)
    ```
+$$
+E = V \,\Phi(d_1) - F \, e^{-r_f T} \,\Phi(d_2)
+$$
 
 2. **Equity volatility as leveraged asset volatility**
 
    ```
    sigma_E = \frac{V * N(d₁)}{E} * sigma_V
    ```
+$$
+\sigma_E = \frac{V \,\Phi(d_1)}{E}\(\sigma_V)
+$$
 
    where the Black–Scholes style terms are
 
@@ -47,6 +53,12 @@ are the targets that the solver tries to satisfy:
    d₁ = [ln(V / F) + (r_f + 0.5 * sigma_V^2) * T] / (sigma_V * √T)
    d₂ = d₁ - sigma_V * √T
    ```
+$$
+d_1 = \frac{\ln\left(\tfrac{V}{F}\right) + \left(r_f + 0.5\,\sigma_V^2\right)T}{\sigma_V \sqrt{T}}
+$$
+$$
+d_2 = d_1 - \sigma_V \sqrt{T}
+$$ 
 
    `N(·)` is the cumulative normal distribution. In words, these expressions say that shareholders behave like call option
    holders: their claim is worth the asset value multiplied by the probability that assets end up above debt, minus the present
