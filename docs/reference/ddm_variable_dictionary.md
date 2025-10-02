@@ -147,7 +147,7 @@ Every quantity that feeds the DDm calculation is summarised below so readers can
 
 ### Variable dictionary (accounting version)
 
-The companion accounting notebook applies the same Merton logic but swaps in book values taken directly from financial statements. It still solves for the hidden asset value (`V`) and asset volatility (`sigma_V`), only now it anchors the scale in reported assets and debt.
+The accounting-approach notebook applies the same Merton logic but swaps in book values taken directly from financial statements. It still solves for the hidden asset value (`V`) and asset volatility (`sigma_V`), only now it anchors the scale in reported assets and debt.
 
 With those ingredients the accounting workflow computes the distance to default as:
 
