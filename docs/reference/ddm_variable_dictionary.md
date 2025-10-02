@@ -291,4 +291,3 @@ The table below summarizes every variable that participates in the Distance to D
 | `solver_status` | Flag emitted by the Merton solver indicating solution quality (`converged`, `no_debt`, etc.). | Categorical status. | Rows flagged `no_debt` skip DDm computation and receive `NaN`. |
 | `DDm` | Distance to Default metric computed per observation. | Standard deviations. | Result of combining the above inputs via the Merton formula. |
 
-main
