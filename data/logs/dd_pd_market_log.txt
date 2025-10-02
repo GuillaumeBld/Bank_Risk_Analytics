@@ -260,3 +260,354 @@ max      5.443075e-01
 
 Rows with missing DDm: 20
 Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1405
+no_debt            16
+no_converge         2
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1405.000000
+mean        7.927959
+std         4.805688
+min        -0.111292
+25%         4.971803
+50%         7.048713
+75%         9.504485
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.405000e+03
+mean     1.342132e-03
+std      1.576264e-02
+min      0.000000e+00
+25%      1.005201e-21
+50%      9.029019e-13
+75%      3.316655e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.632
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1425
+Solver status counts:
+solver_status
+converged        1405
+no_debt            16
+no_converge         2
+missing_input       2
+
+Distance to Default (DDm) summary:
+count    1405.000000
+mean        7.927959
+std         4.805688
+min        -0.111292
+25%         4.971803
+50%         7.048713
+75%         9.504485
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.405000e+03
+mean     1.342132e-03
+std      1.576264e-02
+min      0.000000e+00
+25%      1.005201e-21
+50%      9.029019e-13
+75%      3.316655e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.632
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1424
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=57,419.0
+Solver status counts:
+solver_status
+converged        1404
+no_debt            16
+missing_input       2
+no_converge         2
+
+Distance to Default (DDm) summary:
+count    1404.000000
+mean        7.928889
+std         4.807274
+min        -0.111292
+25%         4.970847
+50%         7.050457
+75%         9.505812
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.404000e+03
+mean     1.343087e-03
+std      1.576822e-02
+min      0.000000e+00
+25%      9.927010e-22
+50%      8.917240e-13
+75%      3.333168e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1424
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=57,419.0
+Solver status counts:
+solver_status
+converged        1404
+no_debt            16
+missing_input       2
+no_converge         2
+
+Distance to Default (DDm) summary:
+count    1404.000000
+mean        7.928889
+std         4.807274
+min        -0.111292
+25%         4.970847
+50%         7.050457
+75%         9.505812
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.404000e+03
+mean     1.343087e-03
+std      1.576822e-02
+min      0.000000e+00
+25%      9.927010e-22
+50%      8.917240e-13
+75%      3.333168e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1424
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=57,419.0
+
+Equity volatility fallbacks (defaulted to 0.25):
+Equity vol fallback → instrument=COFS, year=2019, default_sigma_E=0.25
+Solver status counts:
+solver_status
+converged        1404
+no_debt            16
+missing_input       2
+no_converge         2
+
+Distance to Default (DDm) summary:
+count    1404.000000
+mean        7.928889
+std         4.807274
+min        -0.111292
+25%         4.970847
+50%         7.050457
+75%         9.505812
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.404000e+03
+mean     1.343087e-03
+std      1.576822e-02
+min      0.000000e+00
+25%      9.927010e-22
+50%      8.917240e-13
+75%      3.333168e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1424
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=57,419.0
+
+Equity volatility fallbacks (defaulted to 0.25):
+Equity vol fallback → instrument=COFS, year=2019, default_sigma_E=0.25
+Solver status counts:
+solver_status
+converged        1404
+no_debt            16
+missing_input       2
+no_converge         2
+
+Distance to Default (DDm) summary:
+count    1404.000000
+mean        7.928889
+std         4.807274
+min        -0.111292
+25%         4.970847
+50%         7.050457
+75%         9.505812
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.404000e+03
+mean     1.343087e-03
+std      1.576822e-02
+min      0.000000e+00
+25%      9.927010e-22
+50%      8.917240e-13
+75%      3.333168e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1424
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=57,419.0
+
+Equity volatility fallbacks (defaulted to 0.25):
+Equity vol fallback → instrument=COFS, year=2019, default_sigma_E=0.25
+Solver status counts:
+solver_status
+converged        1404
+no_debt            16
+missing_input       2
+no_converge         2
+
+Distance to Default (DDm) summary:
+count    1404.000000
+mean        7.928889
+std         4.807274
+min        -0.111292
+25%         4.970847
+50%         7.050457
+75%         9.505812
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.404000e+03
+mean     1.343087e-03
+std      1.576822e-02
+min      0.000000e+00
+25%      9.927010e-22
+50%      8.917240e-13
+75%      3.333168e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1424
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=57,419.0
+
+Equity volatility fallbacks (defaulted to 0.25):
+Equity vol fallback → instrument=COFS, year=2019, default_sigma_E=0.25
+Solver status counts:
+solver_status
+converged        1404
+no_debt            16
+missing_input       2
+no_converge         2
+
+Distance to Default (DDm) summary:
+count    1404.000000
+mean        7.928889
+std         4.807274
+min        -0.111292
+25%         4.970847
+50%         7.050457
+75%         9.505812
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.404000e+03
+mean     1.343087e-03
+std      1.576822e-02
+min      0.000000e+00
+25%      9.927010e-22
+50%      8.917240e-13
+75%      3.333168e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1424
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=57,419.0
+
+Equity volatility fallbacks (defaulted to 0.25):
+Equity vol fallback → instrument=COFS, year=2019, default_sigma_E=0.25
+Solver status counts:
+solver_status
+converged        1404
+no_debt            16
+missing_input       2
+no_converge         2
+
+Distance to Default (DDm) summary:
+count    1404.000000
+mean        7.928889
+std         4.807274
+min        -0.111292
+25%         4.970847
+50%         7.050457
+75%         9.505812
+max        49.907057
+
+Probability of Default (PDm) summary:
+count    1.404000e+03
+mean     1.343087e-03
+std      1.576822e-02
+min      0.000000e+00
+25%      9.927010e-22
+50%      8.917240e-13
+75%      3.333168e-07
+max      5.443075e-01
+
+Unit check (market_cap / debt_total_usd) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DDm: 20
+Rows with missing PDm: 20

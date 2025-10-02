@@ -80,3 +80,37 @@ max      2.318609e-01
 
 Rows with missing DDa: 20
 Rows with missing PDa: 20
+
+=== Accounting-Based DD/PD Diagnostics ===
+Total rows processed: 1425
+
+merton_status counts:
+merton_status
+converged      1407
+no_debt          16
+no_converge       2
+
+Distance to Default (DDa) summary:
+count    1407.000000
+mean       12.671461
+std         6.550561
+min         0.731527
+25%         8.428051
+50%        11.546710
+75%        15.243706
+max        57.304421
+Rows with missing DDa: 18
+
+Probability of Default (PDa) summary:
+count    1.407000e+03
+mean     1.931046e-04
+std      6.206577e-03
+min      0.000000e+00
+25%      9.067939e-53
+50%      3.835047e-31
+75%      1.757590e-17
+max      2.322286e-01
+Rows with missing PDa: 18
+
+Equity volatility fallbacks applied:
+Equity vol fallback -> instrument=COFS, year=2019, default_sigma_E=0.25
