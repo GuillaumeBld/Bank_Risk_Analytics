@@ -111,10 +111,9 @@ Once the solver converges, the notebook adds two new columns and reuses existing
 Explaining these outcomes in standard deviation language helps non-specialists interpret the metric without needing option-pricing
 jargon.
 
-## Variable dictionary (common-language version)
+### Variable dictionary (market version)
 
-Every quantity that feeds the DDm calculation is summarised below. The table is grouped by where the variable comes from so that
-non-specialist readers can trace the path from raw data to the final metric.
+Every quantity that feeds the DDm calculation is summarised below so readers can trace the path from raw market data to the final metric.
 
 | Variable | Plain-language meaning | Where it comes from / units | Why it matters for DDm |
 | --- | --- | --- | --- |
@@ -129,15 +128,11 @@ non-specialist readers can trace the path from raw data to the final metric.
 | `solver_status` | Diagnostic label indicating whether the solver succeeded. | Emitted by the numerical routine (e.g., `converged`, `no_debt`). | Only rows marked `converged` are used to compute DDm; other rows receive `NaN`.
 | `DDm` | Final distance-to-default score. | Calculated result, measured in standard deviations. | The end product: how many volatility units separate assets from the debt hurdle.
 
-## Accounting-based DDa at a glance
+### Variable dictionary (accounting version)
 
-The companion accounting notebook applies the same logic but swaps in book values taken directly from financial statements. The solver still hunts for the pair of asset value (`V`) and asset volatility (`sigma_V`) that reconciles two Merton equations, only now it starts from balance-sheet data rather than equity market quotes:
+The companion accounting notebook applies the same Merton logic but swaps in book values taken directly from financial statements. It still solves for the hidden asset value (`V`) and asset volatility (`sigma_V`), only now it anchors the scale in reported assets and debt.
 
-* **Book equity as assets minus liabilities.** Observed equity becomes `E = total_assets - debt_total` after converting both figures from millions to actual dollars, so the solver works on the same scale as the accounts.
-* **Shared risk-free series merged explicitly.** Both notebooks now pull the annual Fama–French `rf` column, convert it from percent to decimal once, and pass that shared series into the Merton equations. The accounting dataset still retains `rit` and `rit_rf` for diagnostics, but the solver discounts debt with the dedicated `rf` field while the final DDa step keeps the drift at zero to stay conservative about future asset growth.
-* **Initial guesses anchored in the balance sheet.** The solver begins with `V₀ = total_assets` (in dollars) and `sigma_{V,0} = equity_vol`, so the first iteration honours the scale and variability implied by the accounting records.
-
-With those ingredients the accounting notebook computes the distance to default as:
+With those ingredients the accounting workflow computes the distance to default as:
 
 ```
 DDa = [ln(V / F) + (0 - 0.5 * sigma_V^2) * T] / (sigma_V * √T)
@@ -145,9 +140,7 @@ DDa = [ln(V / F) + (0 - 0.5 * sigma_V^2) * T] / (sigma_V * √T)
 
 The barrier `F` remains the face value of debt expressed in dollars, and the denominator still turns the safety cushion into asset-volatility steps. As before, the probability of default follows as `PDa = Φ(-DDa)`.
 
-### Variable dictionary (accounting version)
-
-The table below lists every column the accounting workflow touches while building DDa and PDa. It mirrors the market-based dictionary so readers can compare the two approaches line by line.
+The table below lists every column the accounting workflow touches while building DDa and PDa so readers can compare the two approaches line by line.
 
 | Variable | Plain-language meaning | Where it comes from / units | Why it matters for DDa |
 | --- | --- | --- | --- |
@@ -164,27 +157,6 @@ The table below lists every column the accounting workflow touches while buildin
 | `DDa` | Accounting-based distance-to-default score. | Calculated result, in standard deviations. | Shows how many volatility units book assets sit above the book-debt hurdle. |
 | `PDa` | Accounting-based probability of default. | Calculated result, as a probability between 0 and 1. | Converts the DDa cushion into a default likelihood via the normal CDF. |
 
-## Probability-measure language in plain words
-
-Before comparing the two distances to default, it helps to decode the two probability measures that appear in the literature:
-
-* **Risk-neutral measure ("Q-measure").** Under this mathematical lens, we imagine investors are perfectly diversified and only
-  demand the risk-free rate of return after adjusting for risk. Asset values are therefore expected to drift at the risk-free
-  rate `r`, which makes it convenient to price securities because discounted expectations line up with market prices.
-* **Real-world measure ("P-measure").** This perspective tracks the actual frequencies observed in the economy. Asset values are
-  free to grow or shrink at whatever rate the business truly experiences, and the resulting probabilities line up with historical
-  default counts.
-
-Keeping those meanings in mind prevents confusion when the same formula is evaluated with different drift assumptions.
-
-## Risk-free data sources and consistency checks
-
-Both notebooks merge the dedicated Fama–French file (`fama_french_factors_annual_clean.csv`) that already contains the annual Treasury-bill return as the column `rf` (in percentage terms). Each workflow divides that series by 100 exactly once and reuses the resulting decimal wherever the Merton equations need a discount rate. Because the Fama–French feed is independent of any single bank, it gives a consistent economy-wide baseline for all instruments in a given year.
-
-The accounting dataset still provides the realised return `rit` and the excess return `rit_rf = rit - rf`, but those columns now serve mainly as diagnostics: they let us verify that the merged `rf` aligns with the raw inputs and investigate realised performance under the P-measure. The solver itself discounts debt with the shared `rf` column before setting the drift to zero in the final DDa step.
-
-Keeping both notebooks on the same risk-free series eliminates the earlier sign mistakes, preserves comparability between DDm and DDa, and honours the P-measure interpretation by only zeroing the drift **after** the solver has produced sensible `V` and `sigma_V` estimates.
-
 ## Market (DDm) vs. Accounting (DDa): side-by-side view
 
 The two distances to default share the same Merton foundation but answer different questions and implicitly adopt different
@@ -195,13 +167,13 @@ view of the world:
 * **What information do they trust, and what measure does that imply?**
   * **DDm** leans on *current* market sentiment. It matches the observed equity value (`market_cap`) and equity volatility
     (`equity_vol`) from the market dictionary and keeps the drift at `μ = r`, the risk-free rate supplied by `rf`. That choice
-    mirrors the risk-neutral or **Q-measure** perspective described above, where expected growth is set to the risk-free rate so
+    mirrors the risk-neutral or **Q-measure** perspective described in [^prob-measures], where expected growth is set to the risk-free rate so
     that discounted expectations reproduce market prices.
   * **DDa** leans on *reported* balance-sheet figures. It anchors the scale in accounting data such as `total_assets` and
     `debt_total` from the accounting dictionary and deliberately sets `μ = 0`. This corresponds to the real-world or **P-measure**
-    stance described above, which focuses on actual default frequencies and avoids assuming asset growth beyond audited book
+    stance outlined in [^prob-measures], which focuses on actual default frequencies and avoids assuming asset growth beyond audited book
     values.
-* **How is expected growth handled?**
+* **How is expected growth handled?**[^drift]
   * **DDm** applies the numerator `(r - 0.5 sigma_V^2) T` using the `rf` input documented in the DDm dictionary. Positive rates lift
     the cushion, consistent with markets pricing in some asset drift.
   * **DDa** applies `(0 - 0.5 sigma_V^2) T` on purpose. Even with the shared `rf` column feeding the solver, the accounting formula keeps expected growth at zero so book assets are not projected beyond today’s audited balance sheet.
@@ -213,28 +185,9 @@ view of the world:
 Seen together, DDm captures the market’s forward-looking, risk-neutral view, while DDa provides a grounded real-world check based
 on accounting data. Comparing the two helps flag situations where market anxiety diverges from balance-sheet strength.
 
-### Drift sensitivity at a glance
-
-**Drift (`μ`) describes the growth we allow assets to have during the one-year horizon.** Plugging a larger `μ` into the distance-to-default formula stretches the cushion; choosing a smaller one shrinks it.
-
-```
-DD(μ) = [ln(V / F) + (μ - 0.5 * sigma_V^2) * T] / (sigma_V * √T)
-```
-
-The table below spells out—in everyday language—what happens when we flip the drift between the two documented choices. The numerator column shows which inputs from the DDm and DDa dictionaries stay in play, and the final column summarises the human takeaway.
-
-| Scenario | Measure style | Drift choice `μ` | Numerator impact | Plain-English takeaway |
-| --- | --- | --- | --- | --- |
-| `DDm` | Risk-neutral (**Q-measure**) | `μ = r` (uses the `rf` rate listed in the DDm dictionary) | `ln(V / F) + (r - 0.5 sigma_V^2) T` | Markets price assets as if they grow at the risk-free rate, so rising rates lift the DDm cushion. |
-| `DDa` | Real-world (**P-measure**) | `μ = 0` (drift set to zero after solving with the shared `rf` column) | `ln(V / F) + (0 - 0.5 sigma_V^2) T` | Book-based analysis freezes asset growth, making the cushion smaller but safer. |
-
-You can test other `μ` values by reusing the same formula—just swap in a different growth assumption and watch how the numerator changes. Keeping the labels clear (“DDm, market-based, Q-measure, `μ = r`; DDa, accounting-based, P-measure, `μ = 0`”) avoids mixing the two interpretations when comparing scores.
-
 ## Worked example: 2019 DDm comparison for two US banks
 
-To make the abstractions concrete, the table-driven steps below walk through the 2019 DDm calculation for **Bank of America** and
-**JPMorgan Chase**. Every input appears in the DDm variable dictionary above, so you can trace each number back to its plain-language
-definition.
+To make the abstractions concrete, the step-by-step layout below walks through the 2019 DDm calculation for **Bank of America** and **JPMorgan Chase**. Every input appears in the DDm variable dictionary, so you can trace each number back to its plain-language definition.
 
 ### Step 1: Collect the dictionary inputs
 
@@ -247,45 +200,50 @@ definition.
 | `asset_value` (`V`) | 686.3 billion USD | 892.6 billion USD | Solver output representing total firm assets. |
 | `asset_vol` (`sigma_V`) | 0.108 (annual) | 0.099 (annual) | Solver output representing asset volatility. |
 
-### Step 2: Convert book debt into the default barrier `F`
+### Step 2: Rebuild the solver equations
 
-The dictionary reminds us that `debt_total` is reported in millions. Multiplying by 1,000,000 puts the default barrier on the same
-scale as the solver’s asset value:
+Before the notebook can report `asset_value` and `asset_vol`, the root finder must satisfy the Merton relationships for each bank:
+
+```
+E = V * N(d₁) - F * e^{-r_f T} * N(d₂)
+sigma_E = (V * N(d₁) / E) * sigma_V
+d₁ = [ln(V / F) + (r_f + 0.5 * sigma_V^2) * T] / (sigma_V * √T)
+d₂ = d₁ - sigma_V * √T
+```
+
+The algorithm starts from the intuitive guesses `V₀ = E + F` and `sigma_{V,0} = sigma_E`, plugs each bank’s observed `E`, `sigma_E`, `F`, and `r_f` into the equations above, and then lets SciPy’s `root` function adjust `V` and `sigma_V` until both equations line up with the market data. Once the residuals fall below the tolerance, the solver stores the converged `asset_value` and `asset_vol` values listed in Step 1.
+
+### Step 3: Convert book debt into the default barrier `F`
+
+The dictionary reminds us that `debt_total` is reported in millions. Multiplying by 1,000,000 puts the default barrier on the same scale as the solver’s asset value:
 
 * Bank of America: `F = 430,169 × 1,000,000 ≈ 4.30 × 10^11` USD (430.2 billion).
 * JPMorgan Chase: `F = 516,093 × 1,000,000 ≈ 5.16 × 10^11` USD (516.1 billion).
 
-### Step 3: Apply the DDm formula component by component
+### Step 4: Apply the DDm formula component by component
 
-Using `T = 1` year and the Q-measure drift `μ = r`, we can write out each piece of the DD equation for both banks. Values are
-rounded to three decimal places for readability.
+The distance-to-default formula combines leverage, drift, and volatility:
 
-| Bank | `ln(V / F)` | `(r - 0.5 sigma_V^2) * T` | Numerator | Denominator (`sigma_V √T`) | Resulting `DDm` |
+```
+DDm = [ln(V / F) + (r_f - 0.5 * sigma_V^2) * T] / (sigma_V * √T)
+```
+
+Using `T = 1` year and the Q-measure drift `μ = r_f`, we can write out each piece for both banks. Values are rounded to three decimal places for readability.
+
+| Bank | `ln(V / F)` | `(r_f - 0.5 sigma_V^2) * T` | Numerator | Denominator (`sigma_V √T`) | Resulting `DDm` |
 | --- | --- | --- | --- | --- | --- |
 | Bank of America | 0.467 | 0.016 | 0.483 | 0.108 | **4.48** |
 | JPMorgan Chase | 0.548 | 0.017 | 0.564 | 0.099 | **5.73** |
 
-Each numerator combines the leverage cushion `ln(V / F)` with the drift adjustment, and each denominator simply equals `sigma_V` because
-`√T = 1`.
+Each numerator combines the leverage cushion `ln(V / F)` with the drift adjustment, and each denominator simply equals `sigma_V` because `√T = 1`.
 
-### Step 4: Interpret the scores in everyday language
+### Step 5: Interpret the scores in everyday language
 
-* **Bank of America (DDm ≈ 4.5):** Assets sit about four and a half volatility steps above the debt barrier. That is a
-  comfortable buffer, though it leaves less room than JPMorgan once you account for the higher asset volatility.
-* **JPMorgan Chase (DDm ≈ 5.7):** A larger leverage cushion and slightly calmer asset volatility combine to push the score
-  above five standard deviations, signalling even lower near-term default risk under the market-based (Q-measure) view.
+* **Bank of America (DDm ≈ 4.5):** Assets sit about four and a half volatility steps above the debt barrier. That is a comfortable buffer, though it leaves less room than JPMorgan once you account for the higher asset volatility.
+* **JPMorgan Chase (DDm ≈ 5.7):** A larger leverage cushion and slightly calmer asset volatility combine to push the score above five standard deviations, signalling even lower near-term default risk under the market-based (Q-measure) view.
 
-### Walking through the example in this way shows how the dictionary entries plug directly into the solver outputs and the DDm formula, making it easier for non-specialist readers to replicate or sanity-check the calculation.
-The table below summarizes every variable that participates in the Distance to Default (DDm) calculation implemented in `dd_pd_market.ipynb`.
+Walking through the example in this way shows how the dictionary entries plug directly into the solver outputs and the DDm formula, making it easier for non-specialist readers to replicate or sanity-check the calculation.
 
-| Variable | Description | Units / Source | Role in DDm computation |
-| --- | --- | --- | --- |
-| `T` | Time horizon over which default risk is evaluated. | Years (set to 1.0). | Scales both the drift term and volatility denominator in the DDm formula. |
-| `asset_value` (`V`) | Firm asset value estimated by the Merton solver for each instrument-year observation. | USD (solved from equity market cap, equity volatility, debt). | Appears in the log leverage term `ln(V/F)` and influences the drift component. |
-| `asset_vol` (`σ_V`) | Asset volatility returned by the Merton solver. | Annualized volatility (decimal). | Used in both the drift adjustment `(r_f - 0.5 σ_V^2)T` and the denominator `σ_V √T`. |
-| `debt_total` | Total debt from source data reported in millions of USD. | Millions of USD (raw input). | Converted to actual USD before forming the leverage ratio. |
-| `debt_total_usd` (`F`) | Debt converted from millions to actual USD for consistent leverage calculations. | USD (`debt_total * 1,000,000`). | Serves as the default barrier `F` inside `ln(V/F)`. |
-| `rf` (`r_f`) | Annual risk-free rate merged from Fama-French data and converted from percent to decimal. | Decimal rate. | Provides the drift term `(r_f - 0.5 σ_V^2)T` in the numerator. |
-| `solver_status` | Flag emitted by the Merton solver indicating solution quality (`converged`, `no_debt`, etc.). | Categorical status. | Rows flagged `no_debt` skip DDm computation and receive `NaN`. |
-| `DDm` | Distance to Default metric computed per observation. | Standard deviations. | Result of combining the above inputs via the Merton formula. |
+[^prob-measures]: **Risk-neutral measure (Q-measure).** Investors are assumed to demand only the risk-free rate after adjusting for risk, so assets drift at `r_f` and discounted expectations match market prices. **Real-world measure (P-measure).** Probabilities track actual economic frequencies, letting assets grow or shrink at the business’s realised rate instead of the risk-free rate.
 
+[^drift]: Drift (`μ`) tunes the assumed asset growth in the distance-to-default formula `DD(μ) = [ln(V / F) + (μ - 0.5 * sigma_V^2) * T] / (sigma_V * √T)`. DDm evaluates the expression with `μ = r_f`, so rising rates widen the cushion, while DDa fixes `μ = 0` to keep book assets frozen at today’s audited level.
