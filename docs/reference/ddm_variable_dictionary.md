@@ -103,10 +103,27 @@ Once the solver converges, the notebook adds two new columns and reuses existing
 * `asset_value` (`V`) and `asset_vol` (`sigma_V`) supply the hidden inputs that feed the DDm equation.
 * `solver_status` acts as a quick quality check. Any value other than `converged` signals that the DDm should be treated as
   missing.
-* The DDm score itself can be read like a z-score:
-  * **Above 3**: assets sit several volatility steps above the debt hurdle—very low near-term default risk.
-  * **Around 1 to 2**: the firm has a cushion, but it is not huge; watch for weakening fundamentals.
-  * **Near 0 or negative**: assets hover at or below the debt level; default risk is high.
+* The DDm score itself can be read like a z-score, but keep the banking sample in mind. Using the 1,404 bank-year observations
+  where the solver converged in `dd_pd_market.csv`, the distribution of DDm looks like this:
+
+  | Statistic | Value | Interpretation |
+  | --- | ---: | --- |
+  | Count | 1,404 | Converged bank-year rows included in the summary. |
+  | Minimum | -0.11 | Only a handful of points fall at or slightly below the debt hurdle. |
+  | 10th percentile | 3.41 | The weakest decile still retains a cushion just above three volatility steps. |
+  | 25th percentile | 4.97 | Lower-quartile banks hold a moderate buffer. |
+  | Median | 7.05 | Half of the sample sits roughly seven volatility units above default. |
+  | 75th percentile | 9.51 | Upper-quartile banks operate with a pronounced safety margin. |
+  | 90th percentile | 12.91 | The top decile enjoys double-digit cushions. |
+  | Maximum | 49.91 | A few outliers exhibit exceptionally high implied distance to default. |
+
+  These figures imply practical interpretation buckets tailored to the observed data:
+
+  * **Below ~3**: distressed territory. Assets ride close to or below the debt barrier, so default risk is acute.
+  * **Between ~3 and 7**: core range. This band covers the 10th to 50th percentiles and reflects a typical regulatory buffer.
+  * **Between ~7 and 13**: strong cushion. Scores in the median-to-90th percentile range indicate comfortable solvency.
+  * **Above ~13**: outlier strength. Only the top decile reaches double digits; treat these as exceptionally well-capitalised
+    cases.
 
 Explaining these outcomes in standard deviation language helps non-specialists interpret the metric without needing option-pricing
 jargon.
