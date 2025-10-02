@@ -1,6 +1,5 @@
 # DDm Variable Dictionary
 
-<guillaumebld/create-markdown-file-for-ddm-variable-dictionary-jalxld
 The Distance to Default metric (DDm) tells us how many "volatility-sized steps" separate a company's current asset value from
 the level of debt that would mean default. Put differently, it measures the cushion a firm has before creditors would no longer
 be repaid.
@@ -276,7 +275,7 @@ Each numerator combines the leverage cushion `ln(V / F)` with the drift adjustme
 * **JPMorgan Chase (DDm ≈ 5.7):** A larger leverage cushion and slightly calmer asset volatility combine to push the score
   above five standard deviations, signalling even lower near-term default risk under the market-based (Q-measure) view.
 
-Walking through the example in this way shows how the dictionary entries plug directly into the solver outputs and the DDm
+### Walking through the example in this way shows how the dictionary entries plug directly into the solver outputs and the DDm
 formula, making it easier for non-specialist readers to replicate or sanity-check the calculation.
 =======
 The table below summarizes every variable that participates in the Distance to Default (DDm) calculation implemented in `dd_pd_market.ipynb`.
