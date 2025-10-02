@@ -276,7 +276,6 @@ Each numerator combines the leverage cushion `ln(V / F)` with the drift adjustme
   above five standard deviations, signalling even lower near-term default risk under the market-based (Q-measure) view.
 
 ### Walking through the example in this way shows how the dictionary entries plug directly into the solver outputs and the DDm formula, making it easier for non-specialist readers to replicate or sanity-check the calculation.
-=======
 The table below summarizes every variable that participates in the Distance to Default (DDm) calculation implemented in `dd_pd_market.ipynb`.
 
 | Variable | Description | Units / Source | Role in DDm computation |
