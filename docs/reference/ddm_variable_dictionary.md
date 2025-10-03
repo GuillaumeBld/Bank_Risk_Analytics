@@ -1,4 +1,4 @@
-       # DDm Variable Dictionary
+# DD Variable Dictionary
 
 The Distance to Default metric (DDm) tells us how many "volatility-sized steps" separate a company's current asset value from
 the level of debt that would mean default. Put differently, it measures the cushion a firm has before creditors would no longer
@@ -8,9 +8,9 @@ be repaid.
 
 In the market notebook, DDm is computed with the classic Merton distance-to-default equation:
 
-$$
-DDm = \frac{\ln\left(\tfrac{V}{F}\right) + (r_f - 0.5 \sigma_V^2) T}{\sigma_V \sqrt{T}}
-$$
+```
+DDm = [ln(V / F) + (r_f - 0.5 * sigma_V^2) * T] / (sigma_V * √T)
+```
 
 Where each symbol means:
 
@@ -34,18 +34,12 @@ are the targets that the solver tries to satisfy:
    ```
    E = V * N(d₁) - F * e^{-r_f T} * N(d₂)
    ```
-$$
-E = V \,\Phi(d_1) - F \, e^{-r_f T} \,\Phi(d_2)
-$$
 
 2. **Equity volatility as leveraged asset volatility**
 
    ```
    sigma_E = \frac{V * N(d₁)}{E} * sigma_V
    ```
-$$
-\sigma_E = \frac{V \,\Phi(d_1)}{E}\(\sigma_V)
-$$
 
    where the Black–Scholes style terms are
 
@@ -53,12 +47,6 @@ $$
    d₁ = [ln(V / F) + (r_f + 0.5 * sigma_V^2) * T] / (sigma_V * √T)
    d₂ = d₁ - sigma_V * √T
    ```
-$$
-d_1 = \frac{\ln\left(\tfrac{V}{F}\right) + \left(r_f + 0.5\,\sigma_V^2\right)T}{\sigma_V \sqrt{T}}
-$$
-$$
-d_2 = d_1 - \sigma_V \sqrt{T}
-$$ 
 
    `N(·)` is the cumulative normal distribution. In words, these expressions say that shareholders behave like call option
    holders: their claim is worth the asset value multiplied by the probability that assets end up above debt, minus the present
@@ -67,6 +55,7 @@ $$
 
 A larger DDm means a wider safety margin between assets and the debt hurdle; a value near zero means the firm sits right on the
 edge of potential default.
+
 
 ### Variable dictionary (market-approach)
 
@@ -142,7 +131,7 @@ view of the world:
 Seen together, DDm captures the market’s forward-looking, risk-neutral view, while DDa provides a grounded real-world check based
 on accounting data. Comparing the two helps flag situations where market anxiety diverges from balance-sheet strength.
 
-## How the solver works (using SciPy)
+## Understanding the solving process (
 
 The notebook relies on a Merton-model root finder to uncover two hidden inputs—firm asset value (`V`) and asset volatility (`sigma_V`).
 Those quantities are not directly observable, so the solver recovers them from market data using the following steps:
@@ -266,7 +255,7 @@ Using `T = 1` year and the Q-measure drift `μ = r_f`, we can write out each pie
 
 Each numerator combines the leverage cushion `ln(V / F)` with the drift adjustment, and each denominator simply equals `sigma_V` because `√T = 1`.
 
-### Step 5: Interpret the scores in everyday language
+### Step 5: Interpret the scores
 
 * **Bank of America (DDm ≈ 4.5):** Assets sit about four and a half volatility steps above the debt barrier. That is a comfortable buffer, though it leaves less room than JPMorgan once you account for the higher asset volatility.
 * **JPMorgan Chase (DDm ≈ 5.7):** A larger leverage cushion and slightly calmer asset volatility combine to push the score above five standard deviations, signalling even lower near-term default risk under the market-based (Q-measure) view.

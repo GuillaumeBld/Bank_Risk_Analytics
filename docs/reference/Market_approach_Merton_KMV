@@ -1,0 +1,117 @@
+Market approach, Merton KMV solve, required behavior
+
+Purpose
+
+Estimate Distance to Default (DDm) and market implied default probability (PDm) by solving the Merton system for asset value V and asset volatility \sigma_V using observed equity E and equity volatility \sigma_E.
+
+Inputs
+
+Minimum columns per row:
+	•	instrument, year
+	•	market_cap → equity value E in USD
+	•	equity_vol → \sigma_E annualized, decimal
+	•	debt_total_usd or configured barrier F in USD
+	•	rf → one year risk free rate r_f decimal
+	•	T → horizon in years, default 1.0
+
+Conventions
+	•	Default barrier F is configurable.
+Option A (default): F = \texttt{debt_total_usd}.
+Option B: F = \texttt{short_term_debt\_usd} + 0.5 \times \texttt{long_term_debt\_usd}.
+The notebook must print the active convention at run time.
+	•	DDm uses \mu = r_f in the numerator.
+
+Core equations
+
+Pricing and leverage sensitivity:
+E = V\,\Phi(d_1) - F\,e^{-r_f T}\,\Phi(d_2),
+\quad
+\sigma_E = \frac{V}{E}\,\Phi(d_1)\,\sigma_V,
+d_1 = \frac{\ln\!\left(\tfrac{V}{F}\right) + \left(r_f + \tfrac12\sigma_V^2\right)T}{\sigma_V\sqrt{T}},
+\quad
+d_2 = d_1 - \sigma_V\sqrt{T}.
+Distance to default and probability:
+\mathrm{DDm} = \frac{\ln\!\left(\tfrac{V}{F}\right) + \left(r_f - \tfrac12\sigma_V^2\right)T}{\sigma_V\sqrt{T}},
+\quad
+\mathrm{PDm} = \Phi(-\mathrm{DDm}).
+
+Solver
+	•	Unknowns: x = (V,\sigma_V) with bounds V>F, \sigma_V>0.
+	•	Residual vector R(x):
+	•	Price residual: R_1 = E_{\text{model}}(V,\sigma_V) - E_{\text{obs}}.
+	•	Vol residual: R_2 = \sigma_{E,\text{model}}(V,\sigma_V) - \sigma_{E,\text{obs}}.
+	•	Use a robust root finder (for example SciPy root or least_squares) with scaling.
+	•	Initial guess:
+	•	V_0 = E + F
+	•	\sigma_{V,0} = \min(\sigma_E, 1.0)
+
+Required logging
+
+Write these columns for every row, regardless of convergence:
+	•	instrument, year, E, sigma_E, F, rf, T
+	•	V, sigma_V (NaN if not converged)
+	•	d1, d2 (NaN if not converged)
+	•	price_implied, vol_implied
+	•	resid_price = price_implied - E
+	•	resid_vol = vol_implied - sigma_E
+	•	solver_status in {converged, no_debt, invalid_inputs, no_converge}
+	•	solver_message from the optimizer
+	•	iterations, function_evals
+	•	DDm, PDm (NaN if not converged)
+
+Convergence rule
+	•	Mark converged if |\texttt{resid_price}| \le \tau_E and |\texttt{resid_vol}| \le \tau_\sigma.
+Defaults: \tau_E = 1\text{e-}6 \times \max(1, E), \tau_\sigma = 1\text{e-}4.
+	•	Keep only converged rows for summaries and plots.
+
+Input screening
+
+Skip and set solver_status accordingly when:
+	•	F <= 0 or E <= 0 or sigma_E <= 0 or T <= 0 → invalid_inputs
+	•	debt_total_usd == 0 under active barrier convention → no_debt
+	•	Any NaN in required fields → invalid_inputs
+
+Output files
+	•	dd_pd_market.csv with all logging columns above.
+	•	dd_pd_market_summary.csv with count, min, p10, p25, median, p75, p90, max of DDm and PDm, by year and overall.
+
+Notebook structure
+	1.	Title cell stating: Market approach, Merton KMV solve. Uses \mu = r_f. Barrier convention printed.
+	2.	Parameters cell: tolerances, max iterations, barrier option, random seed.
+	3.	Input audit: presence and units, counts by year.
+	4.	Compute F per convention and echo choice.
+	5.	Solve loop with vectorized apply or batched solver. Persist raw residuals and metadata.
+	6.	Compute DDm and PDm only for converged.
+	7.	Save outputs. Print convergence rate and residual quantiles.
+	8.	Plots: histogram of DDm, scatter of resid_price vs resid_vol for diagnostics.
+
+Assertions
+	•	Assert that all kept rows have solver_status == "converged".
+	•	Assert that DDm equals the formula with \mu=r_f within 1\text{e-}8.
+	•	Assert F equals the active convention for at least 99 percent of rows.
+
+Pseudocode
+
+def merton_residuals(v_sigma, E_obs, sigmaE_obs, F, rf, T):
+    V, sigmaV = v_sigma
+    if V <= F or sigmaV <= 0: return np.array([np.inf, np.inf])
+    d1 = (np.log(V/F) + (rf + 0.5*sigmaV**2)*T) / (sigmaV*np.sqrt(T))
+    d2 = d1 - sigmaV*np.sqrt(T)
+    E_model = V*Phi(d1) - F*np.exp(-rf*T)*Phi(d2)
+    sigmaE_model = (V/E_model)*Phi(d1)*sigmaV
+    return np.array([E_model - E_obs, sigmaE_model - sigmaE_obs])
+
+Code comments to add
+	•	At DD computation, comment explicitly:
+# DDm uses mu = rf by construction of risk neutral pricing
+	•	At barrier construction, comment:
+# F convention: using total debt in USD (Option A). Change via config if needed.
+
+Acceptance checks for CI
+	•	Convergence rate printed and greater than a set floor, for example 80 percent on the shipped demo dataset.
+	•	Median absolute resid_price and resid_vol among converged less than tolerances.
+	•	No row in outputs has converged with NaN V or sigma_V.
+
+References
+	•	Merton 1974
+	•	Bharath and Shumway 2008
