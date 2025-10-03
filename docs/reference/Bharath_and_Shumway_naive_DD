@@ -1,4 +1,4 @@
-Yes. Your accounting notebook must drop the solver and implement Bharath and Shumway’s naive DD. Below is the exact change set using your columns.
+# Accounting-approach, Naive DD per Bharath and Shumway (2008). No solver.
 
 Objective
 

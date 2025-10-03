@@ -1,116 +1,45 @@
-
-=== Accounting-Based DD/PD Diagnostics ===
-Total rows processed: 1425
-Solver status counts:
-
-=== Accounting-Based DD/PD Diagnostics ===
-Total rows processed: 1425
-No status column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year
-
-Distance to Default (DDa) summary:
-
-=== Accounting-Based DD/PD Diagnostics ===
+=== Naive DD/PD Diagnostics ===
 Total rows processed: 1425
 
-No status column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year
+Naive status counts:
+insufficient_returns: 475
+nonpos_EF: 16
+ok: 934
 
-No DD column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year
+Fallback indicator counts:
+invalid_sigmaV: 0
+fallback_E_from_de: 0
+fallback_E_from_wacc: 0
+imputed_sigmaE_sizebucket: 483
+insufficient_returns: 483
 
-No PD column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year
+Equity source mix:
+E_pb: 1425
 
-=== Accounting-Based DD/PD Diagnostics ===
-Total rows processed: 1425
+Weak equity proxy count: 0
+DD_naive summary:
+count: 1409.0
+mean: 20.334402859328094
+std: 14.666043063566464
+min: -3.6659835593580623
+10%: 9.225150169664563
+25%: 12.242458241658637
+50%: 16.616343274454913
+75%: 22.91776979148782
+90%: 34.27184947212868
+max: 155.4726238672217
+Rows with missing DD_naive: 16
 
-No solver-status column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year
-
-No DD column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year
-
-No PD column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year
-
-=== Accounting-Based DD/PD Diagnostics ===
-Total rows processed: 1425
-
-merton_status counts:
-merton_status
-converged      1405
-no_debt          16
-no_converge       4
-
-No DD column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year, ticker_prefix, market_cap, equity_volatility, equity_vol, V, σ_V, status, tag, asset_value, asset_vol, merton_status, dd_pd_tag, DDa, PDa
-
-No PD column found. Available columns:
-instrument, year, rit_rf, rit, new_wacc, unnamed:_5, weighted_average_cost_of_capital,_(%), beta_levered, beta_unlevered, environmental_pillar_score, social_pillar_score, governance_pillar_score, esg_score, esg_combined_score, environmental_pillar_score_1, social_pillar_score_1, governance_pillar_score_1, esg_score_1, esg_combined_score_1, lnta, td/ta, price_to_book_value_per_share, capital_adequacy_total_(%), wacc_tax_rate,_(%), wacc_cost_of_debt,_(%), wacc_debt_weight,_(%), wacc_equity_weight,_(%), total_assets, debt_total, d/e, dummylarge, dummymid, Year, ticker_prefix, market_cap, equity_volatility, equity_vol, V, σ_V, status, tag, asset_value, asset_vol, merton_status, dd_pd_tag, DDa, PDa
-
-=== Accounting-Based DD/PD Diagnostics ===
-Total rows processed: 1425
-
-merton_status counts:
-merton_status
-converged      1405
-no_debt          16
-no_converge       4
-
-Distance to Default (DDa) summary:
-count    1405.000000
-mean       12.686442
-std         6.539308
-min         0.732732
-25%         8.444204
-50%        11.565796
-75%        15.262853
-max        57.304421
-
-Probability of Default (PDa) summary:
-count    1.405000e+03
-mean     1.914104e-04
-std      6.200174e-03
-min      0.000000e+00
-25%      6.760254e-53
-50%      3.070967e-31
-75%      1.530623e-17
-max      2.318609e-01
-
-Rows with missing DDa: 20
-Rows with missing PDa: 20
-
-=== Accounting-Based DD/PD Diagnostics ===
-Total rows processed: 1425
-
-merton_status counts:
-merton_status
-converged      1407
-no_debt          16
-no_converge       2
-
-Distance to Default (DDa) summary:
-count    1407.000000
-mean       12.671461
-std         6.550561
-min         0.731527
-25%         8.428051
-50%        11.546710
-75%        15.243706
-max        57.304421
-Rows with missing DDa: 18
-
-Probability of Default (PDa) summary:
-count    1.407000e+03
-mean     1.931046e-04
-std      6.206577e-03
-min      0.000000e+00
-25%      9.067939e-53
-50%      3.835047e-31
-75%      1.757590e-17
-max      2.322286e-01
-Rows with missing PDa: 18
-
-Equity volatility fallbacks applied:
-Equity vol fallback -> instrument=COFS, year=2019, default_sigma_E=0.25
+PD_naive summary:
+count: 1409.0
+mean: 0.0007469648871723006
+std: 0.026672477584935062
+min: 0.0
+10%: 1.031883516155925e-257
+25%: 1.5450226846369263e-116
+50%: 2.653631194155672e-62
+75%: 9.218141269679159e-35
+90%: 1.4159666168129308e-20
+max: 0.999876805122454
+Rows with missing PD_naive: 16
+PD==0 count: 114, PD==1 count: 0
