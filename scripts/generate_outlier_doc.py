@@ -129,6 +129,30 @@ def is_outlier(record: Record, *, dataset: str) -> bool:
     return dd_value is not None and dd_value > OUTLIER_THRESHOLD
 
 
+def get_debt_weight(record: Record, *, dataset: str) -> Optional[float]:
+    return (
+        record.acct_wacc_weight
+        if dataset == "accounting"
+        else record.market_wacc_weight
+    )
+
+
+def get_de_ratio(record: Record, *, dataset: str) -> Optional[float]:
+    return (
+        record.acct_de_ratio if dataset == "accounting" else record.market_de_ratio
+    )
+
+
+def dd_difference(
+    record: Record, *, minuend: str, subtrahend: str
+) -> Optional[float]:
+    minuend_value = get_dd(record, dataset=minuend)
+    subtrahend_value = get_dd(record, dataset=subtrahend)
+    if minuend_value is None or subtrahend_value is None:
+        return None
+    return minuend_value - subtrahend_value
+
+
 def format_dd(value: Optional[float]) -> str:
     if value is None:
         return "—"
@@ -147,6 +171,12 @@ def format_pd(value: Optional[float]) -> str:
 
 def format_flag(value: bool) -> str:
     return "✓" if value else ""
+
+
+def format_number(value: Optional[float], *, digits: int = 2) -> str:
+    if value is None:
+        return "—"
+    return f"{value:.{digits}f}"
 
 
 def render_table(
@@ -248,6 +278,221 @@ def partition_records(
     return zero_cost, low_debt, low_leverage, other
 
 
+def additional_review_groups(
+    records: Iterable[Record], *, dataset: str
+) -> List[Tuple[str, List[Record], Optional[Tuple[str, Callable[[Record], str]]]]]:
+    remaining: List[Record] = list(records)
+    groups: List[Tuple[str, List[Record], Optional[Tuple[str, Callable[[Record], str]]]]] = []
+    counterpart = "market" if dataset == "accounting" else "accounting"
+
+    def extract_group(
+        title: str,
+        predicate: Callable[[Record], bool],
+        extra: Optional[Tuple[str, Callable[[Record], str]]] = None,
+    ) -> None:
+        nonlocal remaining
+        matched: List[Record] = []
+        keep: List[Record] = []
+        for record in remaining:
+            if predicate(record):
+                matched.append(record)
+            else:
+                keep.append(record)
+        if matched:
+            matched.sort(key=lambda r: (r.instrument, r.year))
+            groups.append((title, matched, extra))
+        remaining = keep
+
+    if dataset == "accounting":
+        extract_group(
+            "#### Missing Market DD",
+            lambda record: get_dd(record, dataset=counterpart) is None,
+        )
+        extract_group(
+            "#### Moderately Low Leverage (0.05 < D/E ≤ 0.10)",
+            lambda record: (
+                (ratio := get_de_ratio(record, dataset=dataset)) is not None
+                and 0.05 < ratio <= 0.10
+            ),
+            (
+                "D/E",
+                lambda record: format_number(
+                    get_de_ratio(record, dataset=dataset)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Thin Debt Mix (Weight ≤ 10%)",
+            lambda record: (
+                (weight := get_debt_weight(record, dataset=dataset)) is not None
+                and weight <= 10.0
+            ),
+            (
+                "Debt Weight (%)",
+                lambda record: format_number(
+                    get_debt_weight(record, dataset=dataset)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Both Models Elevated (DDm > 13)",
+            lambda record: (
+                (ddm := get_dd(record, dataset=counterpart)) is not None
+                and ddm > OUTLIER_THRESHOLD
+            ),
+        )
+        extract_group(
+            "#### Accounting ≫ Market (Δ ≥ 10)",
+            lambda record: (
+                (ddm := get_dd(record, dataset=counterpart)) is not None
+                and ddm <= OUTLIER_THRESHOLD
+                and (
+                    (delta := dd_difference(
+                        record, minuend=dataset, subtrahend=counterpart
+                    ))
+                    is not None
+                )
+                and delta >= 10
+            ),
+            (
+                "ΔDD (Acct - Market)",
+                lambda record: format_number(
+                    dd_difference(record, minuend=dataset, subtrahend=counterpart)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Accounting ≫ Market (Δ 5-10)",
+            lambda record: (
+                (ddm := get_dd(record, dataset=counterpart)) is not None
+                and ddm <= OUTLIER_THRESHOLD
+                and (
+                    (delta := dd_difference(
+                        record, minuend=dataset, subtrahend=counterpart
+                    ))
+                    is not None
+                )
+                and 5 <= delta < 10
+            ),
+            (
+                "ΔDD (Acct - Market)",
+                lambda record: format_number(
+                    dd_difference(record, minuend=dataset, subtrahend=counterpart)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Accounting ≫ Market (Δ 2-5)",
+            lambda record: (
+                (ddm := get_dd(record, dataset=counterpart)) is not None
+                and (
+                    (delta := dd_difference(
+                        record, minuend=dataset, subtrahend=counterpart
+                    ))
+                    is not None
+                )
+                and 2 <= delta < 5
+            ),
+            (
+                "ΔDD (Acct - Market)",
+                lambda record: format_number(
+                    dd_difference(record, minuend=dataset, subtrahend=counterpart)
+                ),
+            ),
+        )
+    else:
+        extract_group(
+            "#### Missing Accounting DD",
+            lambda record: get_dd(record, dataset=counterpart) is None,
+        )
+        extract_group(
+            "#### Moderately Low Leverage (0.05 < D/E ≤ 0.10)",
+            lambda record: (
+                (ratio := get_de_ratio(record, dataset=dataset)) is not None
+                and 0.05 < ratio <= 0.10
+            ),
+            (
+                "D/E",
+                lambda record: format_number(
+                    get_de_ratio(record, dataset=dataset)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Thin Debt Mix (Weight ≤ 10%)",
+            lambda record: (
+                (weight := get_debt_weight(record, dataset=dataset)) is not None
+                and weight <= 10.0
+            ),
+            (
+                "Debt Weight (%)",
+                lambda record: format_number(
+                    get_debt_weight(record, dataset=dataset)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Accounting ≫ Market (Δ ≥ 10)",
+            lambda record: (
+                (delta := dd_difference(
+                    record, minuend=counterpart, subtrahend=dataset
+                ))
+                is not None
+                and delta >= 10
+            ),
+            (
+                "ΔDD (Acct - Market)",
+                lambda record: format_number(
+                    dd_difference(record, minuend=counterpart, subtrahend=dataset)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Accounting ≫ Market (Δ 5-10)",
+            lambda record: (
+                (delta := dd_difference(
+                    record, minuend=counterpart, subtrahend=dataset
+                ))
+                is not None
+                and 5 <= delta < 10
+            ),
+            (
+                "ΔDD (Acct - Market)",
+                lambda record: format_number(
+                    dd_difference(record, minuend=counterpart, subtrahend=dataset)
+                ),
+            ),
+        )
+        extract_group(
+            "#### Accounting ≫ Market (Δ 2-5)",
+            lambda record: (
+                (delta := dd_difference(
+                    record, minuend=counterpart, subtrahend=dataset
+                ))
+                is not None
+                and 2 <= delta < 5
+            ),
+            (
+                "ΔDD (Acct - Market)",
+                lambda record: format_number(
+                    dd_difference(record, minuend=counterpart, subtrahend=dataset)
+                ),
+            ),
+        )
+
+    if remaining:
+        remaining.sort(key=lambda record: (record.instrument, record.year))
+        groups.append(
+            (
+                "#### Still Needs Investigation",
+                remaining,
+                ("Notes", lambda _: "⚠"),
+            )
+        )
+
+    return groups
+
+
 def build_section(records: Iterable[Record], *, dataset: str) -> List[str]:
     relevant_records = [r for r in records if is_outlier(r, dataset=dataset)]
     relevant_records.sort(key=lambda r: (r.instrument, r.year))
@@ -276,11 +521,6 @@ def build_section(records: Iterable[Record], *, dataset: str) -> List[str]:
         ("### Zero-Cost Debt Assumptions", zero_cost, None),
         ("### Recorded Debt ≤ 1", low_debt, None),
         ("### Debt-to-Equity Ratio ≤ 0.05", low_leverage, None),
-        (
-            "### Additional Review Required",
-            other,
-            ("Needs Investigation", lambda _: "⚠"),
-        ),
     ]
 
     for heading, rows, extra in groups:
@@ -297,6 +537,27 @@ def build_section(records: Iterable[Record], *, dataset: str) -> List[str]:
         )
         out.append("")
 
+    out.append("### Additional Review Required")
+    out.append("")
+    subgroups = additional_review_groups(other, dataset=dataset)
+    if not subgroups:
+        out.append("_No additional review cases._")
+        out.append("")
+    else:
+        for heading, rows, extra in subgroups:
+            if not rows:
+                continue
+            out.append(heading)
+            out.append("")
+            out.extend(
+                render_table(
+                    rows,
+                    dataset=dataset,
+                    extra_column=extra,
+                )
+            )
+            out.append("")
+
     return out
 
 
@@ -309,7 +570,7 @@ def main() -> None:
         "",
         "This document lists bank-year combinations with accounting (DDa) or market (DDm) distance-to-default scores above 13.",
         "Entries are grouped by the data issues most commonly linked to extreme scores: zero-cost debt assumptions, negligible recorded debt, or very low leverage.",
-        "Any remaining outliers are surfaced separately for deeper review.",
+        "Any remaining outliers are surfaced separately for deeper review and clustered by cross-model spreads, thin debt mixes, or moderately low leverage before surfacing unresolved cases.",
         "",
         "A dash (—) indicates the paired metric was unavailable in the source data (for example, when the market solver reported `missing_input`).",
         "",
