@@ -42,6 +42,29 @@ This document catalogs the bank-year combinations that produced distance-to-defa
 | WNEB         |   2019 | 15.51 | 8.40  | 1.51e-54  | 2.16e-17  |
 | WSBF         |   2021 | 21.04 | 15.27 | 1.32e-98  | 5.99e-53  |
 
+#### Quick Reference — Accounting Instruments with Zero-Cost Debt Flags
+
+| Instrument | Years with DD > 13 |
+|------------|--------------------|
+| BANF       | 2023 |
+| COFS       | 2019, 2020 |
+| EBC        | 2022, 2023 |
+| ESQ        | 2021, 2022, 2023 |
+| FHB        | 2022 |
+| FNLC       | 2018, 2019, 2021, 2022, 2023 |
+| FNWB       | 2018, 2019 |
+| HBCP       | 2018 |
+| LCNB       | 2018, 2019, 2021 |
+| LKFN       | 2021 |
+| OPBK       | 2022 |
+| PCB        | 2019, 2021, 2022 |
+| PDLB       | 2019, 2022 |
+| PFIS       | 2019 |
+| PVBC       | 2021 |
+| STEL       | 2021, 2022 |
+| WNEB       | 2019 |
+| WSBF       | 2021 |
+
 ### Recorded Debt ≤ 1
 
 | Instrument   |   Year |   DDa |   DDm |       PDa |       PDm |
@@ -58,6 +81,18 @@ This document catalogs the bank-year combinations that produced distance-to-defa
 | FHB          |   2017 | 57.3  | 49.91 | 0         | 0         |
 | LOB          |   2019 | 34.49 | 29.89 | 5.68e-261 | 1.47e-196 |
 | OPBK         |   2022 | 42.74 | 32.59 | 0         | 2.56e-233 |
+
+#### Quick Reference — Accounting Instruments with ≤ $1 Recorded Debt
+
+| Instrument | Years with DD > 13 |
+|------------|--------------------|
+| BFIN       | 2019 |
+| BMRC       | 2021 |
+| ESQ        | 2018, 2019, 2020, 2021, 2022, 2023 |
+| FCBC       | 2020 |
+| FHB        | 2017 |
+| LOB        | 2019 |
+| OPBK       | 2022 |
 
 ### Debt-to-Equity Ratio ≤ 0.05
 
@@ -182,6 +217,54 @@ This document catalogs the bank-year combinations that produced distance-to-defa
 | WNEB         |   2019 | 15.51 | 8.40  | 1.51e-54  | 2.16e-17  |
 | WSBF         |   2021 | 21.04 | 15.27 | 1.32e-98  | 5.99e-53  |
 
+#### Quick Reference — Accounting Instruments with ≤ 5% Debt-to-Equity
+
+| Instrument | Years with DD > 13 |
+|------------|--------------------|
+| AROW       | 2021 |
+| AUBN       | 2018, 2019, 2021, 2022 |
+| BANF       | 2016, 2017, 2018, 2019, 2021, 2022, 2023 |
+| BCML       | 2019 |
+| BFIN       | 2019 |
+| BMRC       | 2017, 2018, 2019, 2020, 2021 |
+| CATY       | 2021 |
+| CBNK       | 2021 |
+| CBU        | 2016 |
+| CHMG       | 2018, 2019, 2020, 2021, 2022 |
+| COFS       | 2019, 2020 |
+| COLB       | 2016, 2017, 2018, 2021 |
+| CWBC       | 2018, 2019, 2020, 2021 |
+| CZNC       | 2018 |
+| EBC        | 2022, 2023 |
+| EBTC       | 2018 |
+| ESQ        | 2018, 2019, 2020, 2021, 2022, 2023 |
+| EWBC       | 2017, 2018, 2021 |
+| FBNC       | 2021 |
+| FCBC       | 2019, 2020, 2021, 2022 |
+| FHB        | 2017, 2019, 2022 |
+| FNLC       | 2018, 2019, 2021, 2022, 2023 |
+| FNWB       | 2018, 2019 |
+| FRBKQ      | 2017 |
+| HBCP       | 2018, 2019 |
+| HFWA       | 2019 |
+| INDB       | 2022 |
+| LCNB       | 2018, 2019, 2021 |
+| LKFN       | 2021 |
+| LOB        | 2017, 2018, 2019 |
+| NBHC       | 2021 |
+| OPBK       | 2022 |
+| PCB        | 2019, 2021, 2022 |
+| PDLB       | 2019, 2022 |
+| PFIS       | 2019 |
+| PVBC       | 2021 |
+| RMBI       | 2021 |
+| STEL       | 2019, 2021, 2022 |
+| THFF       | 2017 |
+| VBTX       | 2017 |
+| WABC       | 2017, 2018, 2019 |
+| WASH       | 2021 |
+| WSBF       | 2021 |
+
 ## Market DD Outliers
 
 ### Zero-Cost Debt Inputs
@@ -206,6 +289,23 @@ This document catalogs the bank-year combinations that produced distance-to-defa
 | STEL         |   2021 | 24.11 | 18.77 | 1.07e-128 | 6.46e-79  |
 | WSBF         |   2021 | 21.04 | 15.27 | 1.32e-98  | 5.99e-53  |
 
+#### Quick Reference — Market Instruments with Zero-Cost Debt Flags
+
+| Instrument | Years with DD > 13 |
+|------------|--------------------|
+| BANF       | 2023 |
+| ESQ        | 2021, 2022, 2023 |
+| FHB        | 2022 |
+| HBCP       | 2018 |
+| LCNB       | 2019, 2021 |
+| LKFN       | 2021 |
+| OPBK       | 2022 |
+| PCB        | 2019, 2021, 2022 |
+| PDLB       | 2019 |
+| PVBC       | 2021 |
+| STEL       | 2021 |
+| WSBF       | 2021 |
+
 ### Recorded Debt ≤ 1
 
 | Instrument   |   Year |   DDa |   DDm |       PDa |       PDm |
@@ -222,6 +322,18 @@ This document catalogs the bank-year combinations that produced distance-to-defa
 | FHB          |   2017 | 57.3  | 49.91 | 0         | 0         |
 | LOB          |   2019 | 34.49 | 29.89 | 5.68e-261 | 1.47e-196 |
 | OPBK         |   2022 | 42.74 | 32.59 | 0         | 2.56e-233 |
+
+#### Quick Reference — Market Instruments with ≤ $1 Recorded Debt
+
+| Instrument | Years with DD > 13 |
+|------------|--------------------|
+| BFIN       | 2019 |
+| BMRC       | 2021 |
+| ESQ        | 2018, 2019, 2020, 2021, 2022, 2023 |
+| FCBC       | 2020 |
+| FHB        | 2017 |
+| LOB        | 2019 |
+| OPBK       | 2022 |
 
 ### Debt-to-Equity Ratio ≤ 0.05
 
@@ -296,3 +408,40 @@ This document catalogs the bank-year combinations that produced distance-to-defa
 | WABC         |   2018 | 22.02 | 16.35 | 9.54e-108 | 2.3e-60   |
 | WABC         |   2019 | 36.06 | 28.65 | 4.76e-285 | 8.1e-181  |
 | WSBF         |   2021 | 21.04 | 15.27 | 1.32e-98  | 5.99e-53  |
+
+#### Quick Reference — Market Instruments with ≤ 5% Debt-to-Equity
+
+| Instrument | Years with DD > 13 |
+|------------|--------------------|
+| AROW       | 2021 |
+| AUBN       | 2019, 2021, 2022 |
+| BANF       | 2016, 2017, 2018, 2019, 2023 |
+| BCML       | 2019 |
+| BFIN       | 2019 |
+| BMRC       | 2017, 2018, 2019, 2020, 2021 |
+| CATY       | 2021 |
+| CHMG       | 2018, 2019, 2020, 2021 |
+| COLB       | 2016, 2017, 2018 |
+| CWBC       | 2018, 2019 |
+| CZNC       | 2018 |
+| ESQ        | 2018, 2019, 2020, 2021, 2022, 2023 |
+| EWBC       | 2017, 2021 |
+| FCBC       | 2019, 2020, 2021, 2022, 2023 |
+| FHB        | 2017, 2019, 2022 |
+| HBCP       | 2018, 2019 |
+| HFWA       | 2019 |
+| INDB       | 2022 |
+| LCNB       | 2019, 2021 |
+| LKFN       | 2021 |
+| LOB        | 2017, 2018, 2019 |
+| NBHC       | 2021 |
+| OPBK       | 2022 |
+| PCB        | 2019, 2021, 2022 |
+| PDLB       | 2019 |
+| PVBC       | 2021 |
+| RMBI       | 2021 |
+| STEL       | 2019, 2021 |
+| THFF       | 2017 |
+| VBTX       | 2017 |
+| WABC       | 2017, 2018, 2019 |
+| WSBF       | 2021 |
