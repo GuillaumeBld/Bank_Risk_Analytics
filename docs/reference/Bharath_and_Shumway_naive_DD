@@ -1,0 +1,187 @@
+Yes. Your accounting notebook must drop the solver and implement Bharath and Shumway’s naive DD. Below is the exact change set using your columns.
+
+Objective
+
+Compute DD_{\text{naive}} and PD_{\text{naive}} per Bharath and Shumway (2008) using proxies, no fixed point solve.
+
+Column mapping and fixes
+	•	Rename nstrument → instrument.
+	•	Treat year as integer panel key with instrument.
+	•	Units: total_assets, debt_total are in millions. Multiply by 10^6 when forming values used in equations.
+
+Required derived fields
+	1.	Book equity
+\text{be} = (\text{total\_assets} - \text{debt\_total}) \times 10^6
+Guard against negative or missing.
+	2.	Market equity E
+Use price to book if available:
+E = \text{price\_to\_book\_value\_per\_share} \times \text{be}
+Fallbacks, in order:
+
+	•	If d/e present and >0: E = \text{debt\_total}\times 10^6 / (\text{d/e}).
+	•	If wacc_equity_weight and wacc_debt_weight present and sum to one, use enterprise proxy EV \approx \text{total\_assets}\times 10^6, then E = EV \times \text{wacc\_equity\_weight}. Flag as weak.
+
+	3.	Debt face F
+F = \text{debt\_total}\times 10^6
+	4.	Equity volatility \sigma_E
+Compute rolling standard deviation of equity returns by firm, trailing k years, default k=3:
+\sigma_{E,i,t} = \text{stdev}\left(\{\text{rit}{i,t-1},\ldots,\text{rit}{i,t-k}\}\right)
+If fewer than two past values, impute with size bucket median using dummylarge, dummymid, else sample median. Winsorize at 1st and 99th percentiles.
+	5.	Debt volatility proxy \hat\sigma_D
+\hat\sigma_D = 0.05 + 0.25\,\sigma_E
+	6.	Asset value proxy \hat V
+\hat V = E + F
+	7.	Asset volatility proxy \hat\sigma_V
+Value weighted mix:
+\hat\sigma_V = \frac{E}{E+F}\,\sigma_E + \frac{F}{E+F}\,\hat\sigma_D
+	8.	Asset drift proxy \hat\mu
+Use last year’s equity return:
+\hat\mu_{i,t} = \text{rit}_{i,t-1}
+If missing, use firm mean over available past years, else size bucket median.
+	9.	Naive distance and probability
+DD_{\text{naive}} = \frac{\ln\!\left(\tfrac{\hat V}{F}\right) + \left(\hat\mu - \tfrac12 \hat\sigma_V^2\right)T}{\hat\sigma_V \sqrt{T}},\quad T=1
+Choose link and document. Common choice:
+PD_{\text{naive}} = \Phi(-DD_{\text{naive}})
+
+Data quality flags
+
+Create string naive_status with first failing reason:
+	•	missing_E, missing_F, nonpos_EF, insufficient_returns, imputed_sigmaE_sizebucket, fallback_E_from_de, fallback_E_from_wacc.
+Set outputs to NaN if nonpos_EF or both E and F missing.
+
+Notebook edits, cell by cell
+	1.	Header and purpose
+Change title to “Accounting approach, Naive DD per Bharath and Shumway (2008). No solver.”
+	2.	Imports and options
+Add numpy, pandas. Set display and winsorization helpers.
+	3.	Load and clean
+
+	•	Rename nstrument to instrument.
+	•	Ensure year is int.
+	•	Convert total_assets, debt_total to floats.
+
+	4.	Compute book equity and market equity
+
+	•	Compute be.
+	•	Compute E_pb = price_to_book_value_per_share * be.
+	•	Compute E_de = (debt_total*1e6) / (d/e) when valid.
+	•	Compute E_wacc = total_assets*1e6 * wacc_equity_weight when valid.
+	•	Choose E with priority: E_pb, then E_de, then E_wacc. Record chosen source in E_source.
+
+	5.	Compute F
+F = debt_total * 1e6.
+	6.	Equity vol
+
+	•	Sort by instrument, year.
+	•	Groupby rolling std of rit with window=3, min_periods=2 to form sigma_E.
+	•	Impute as specified. Record imputation flags.
+
+	7.	Debt vol proxy and asset proxies
+
+	•	sigma_D_hat = 0.05 + 0.25*sigma_E.
+	•	V_hat = E + F.
+	•	sigma_V_hat = (E/(E+F))*sigma_E + (F/(E+F))*sigma_D_hat.
+
+	8.	Drift proxy
+
+	•	mu_hat = rit.shift(1) by firm.
+	•	Backfill with firm mean of rit, else size bucket median, record flag.
+
+	9.	Compute DD and PD
+
+	•	DD_naive and PD_naive per formulas above, T=1.
+	•	Set NaN for rows with invalid inputs.
+	•	Clip PD_naive to [0,1].
+
+	10.	Outputs
+
+	•	Save dd_pd_naive.csv with keys and inputs:
+instrument, year, E, F, sigma_E, sigma_D_hat, sigma_V_hat, mu_hat, DD_naive, PD_naive, E_source, naive_status.
+	•	Save dd_pd_naive_summary.csv with percentiles by year and overall.
+
+	11.	Diagnostics
+
+	•	Plot DD_naive distribution by year.
+	•	Scatter DDm vs DD_naive when the market file is present, to compare.
+
+Pandas code stubs
+
+# 0) keys
+df = df.copy()
+df = df.rename(columns={"nstrument":"instrument"})
+df["year"] = df["year"].astype(int)
+
+# 1) units
+MM = 1_000_000.0
+df["assets_usd"] = df["total_assets"] * MM
+df["debt_usd"]   = df["debt_total"]   * MM
+df["be_usd"]     = (df["total_assets"] - df["debt_total"]) * MM
+
+# 2) market equity E
+df["E_pb"]  = df["price_to_book_value_per_share"] * df["be_usd"]
+df["E_de"]  = np.where(df["d/e"]>0, df["debt_usd"]/df["d/e"], np.nan)
+mask_wacc  = (df["wacc_equity_weight"]>0) & (df["wacc_debt_weight"]>0)
+df["E_wacc"] = np.where(mask_wacc, df["assets_usd"]*df["wacc_equity_weight"], np.nan)
+
+def choose_E(row):
+    for key in ["E_pb","E_de","E_wacc"]:
+        v = row[key]
+        if pd.notna(v) and v>0:
+            return v, key
+    return np.nan, "missing"
+E_choice = df.apply(choose_E, axis=1, result_type="expand")
+df["E"], df["E_source"] = E_choice[0], E_choice[1]
+
+# 3) F
+df["F"] = df["debt_usd"]
+
+# 4) sigma_E rolling
+df = df.sort_values(["instrument","year"])
+df["sigma_E"] = (
+    df.groupby("instrument")["rit"]
+      .apply(lambda s: s.shift(1).rolling(window=3, min_periods=2).std())
+      .reset_index(level=0, drop=True)
+)
+# impute by size bucket
+size = np.select([df["dummylarge"]==1, df["dummymid"]==1], ["large","mid"], default="small")
+df["size_bucket"] = size
+med = df.groupby("size_bucket")["sigma_E"].transform(lambda x: x.fillna(x.median()))
+df["sigma_E"] = df["sigma_E"].fillna(med)
+
+# 5) proxies
+df["sigma_D_hat"] = 0.05 + 0.25*df["sigma_E"]
+df["V_hat"] = df["E"] + df["F"]
+df["sigma_V_hat"] = (df["E"]/df["V_hat"])*df["sigma_E"] + (df["F"]/df["V_hat"])*df["sigma_D_hat"]
+
+# 6) drift proxy
+df["mu_hat"] = df.groupby("instrument")["rit"].shift(1)
+mu_med = df.groupby("size_bucket")["mu_hat"].transform(lambda x: x.fillna(x.median()))
+df["mu_hat"] = df["mu_hat"].fillna(mu_med)
+
+# 7) DD and PD
+T = 1.0
+num = np.log(df["V_hat"]/df["F"]) + (df["mu_hat"] - 0.5*df["sigma_V_hat"]**2)*T
+den = df["sigma_V_hat"]*np.sqrt(T)
+df["DD_naive"] = num/den
+from scipy.stats import norm
+df["PD_naive"] = norm.cdf(-df["DD_naive"]).clip(0,1)
+
+# 8) status
+def status(row):
+    if not np.isfinite(row["E"]) or not np.isfinite(row["F"]) or row["E"]<=0 or row["F"]<=0:
+        return "nonpos_EF"
+    if not np.isfinite(row["sigma_E"]):
+        return "missing_sigmaE"
+    return "ok"
+df["naive_status"] = df.apply(status, axis=1)
+
+# 9) write
+cols = ["instrument","year","E","F","sigma_E","sigma_D_hat","sigma_V_hat","mu_hat",
+        "DD_naive","PD_naive","E_source","naive_status"]
+df[cols].to_csv("dd_pd_naive.csv", index=False)
+
+Documentation changes
+	•	In the accounting notebook header, state: “Implements Bharath and Shumway naive DD. Uses \hat V=E+F, \hat\sigma_D=0.05+0.25\sigma_E, value weighted \hat\sigma_V, and \hat\mu=r_{i,t-1}. No solver.”
+	•	In the reference page, keep one CDF symbol \Phi, and include the naive equations above.
+
+This delivers a true naive implementation and aligns the repo with your stated split: market solve vs accounting naive.
