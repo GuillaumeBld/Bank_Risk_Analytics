@@ -126,7 +126,7 @@ def get_dd(record: Record, *, dataset: str) -> Optional[float]:
 
 def is_outlier(record: Record, *, dataset: str) -> bool:
     dd_value = get_dd(record, dataset=dataset)
-    return dd_value is not None and dd_value < OUTLIER_THRESHOLD
+    return dd_value is not None and dd_value > OUTLIER_THRESHOLD
 
 
 def format_dd(value: Optional[float]) -> str:
@@ -219,7 +219,7 @@ def summarize_groups(
     )
 
     return [
-        f"* Total flagged outliers (<{OUTLIER_THRESHOLD:g}): **{total}**",
+        f"* Total flagged outliers (>{OUTLIER_THRESHOLD:g}): **{total}**",
         f"* Zero-cost debt inputs: **{len(zero_cost_list)}**",
         f"* Recorded debt ≤ 1: **{len(low_debt_list)}**",
         f"* Debt-to-equity ratio ≤ 0.05: **{len(low_leverage_list)}**",
@@ -305,9 +305,9 @@ def main() -> None:
     all_records = list(records.values())
 
     lines: List[str] = [
-        "# Distance-to-Default Outliers (<13)",
+        "# Distance-to-Default Outliers (>13)",
         "",
-        "This document lists bank-year combinations with accounting (DDa) or market (DDm) distance-to-default scores below 13.",
+        "This document lists bank-year combinations with accounting (DDa) or market (DDm) distance-to-default scores above 13.",
         "Entries are grouped by the data issues most commonly linked to extreme scores: zero-cost debt assumptions, negligible recorded debt, or very low leverage.",
         "Any remaining outliers are surfaced separately for deeper review.",
         "",
