@@ -9,8 +9,9 @@ from typing import Dict, List, Sequence
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT_PATH = ROOT / "data" / "merged_inputs" / "dd_pd_market.csv"
-RESULT_PATH = ROOT / "dd_pd_market.csv"
-SUMMARY_PATH = ROOT / "dd_pd_market_summary.csv"
+OUTPUT_DIR = ROOT / "data" / "outputs"
+RESULT_PATH = OUTPUT_DIR / "dd_pd_market.csv"
+SUMMARY_PATH = OUTPUT_DIR / "dd_pd_market_summary.csv"
 
 DEFAULT_T = 1.0
 DEBT_SCALE = 1_000_000.0
@@ -236,6 +237,8 @@ def main() -> None:
     fieldnames = original_fields + [
         field for field in extra_fields if field not in original_fields
     ]
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     with RESULT_PATH.open("w", newline="") as out_f:
         writer = csv.DictWriter(out_f, fieldnames=fieldnames)
