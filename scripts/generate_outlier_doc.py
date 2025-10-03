@@ -135,51 +135,15 @@ def format_pd(value: Optional[float]) -> str:
     return f"{value:.2e}"
 
 
-def format_flag(value: bool) -> str:
-    return "✓" if value else ""
-
-
-def render_table(rows: Iterable[Record], *, dataset: str) -> List[str]:
-    header = (
-        "| Instrument | Year | DDa | DDm | PDa | PDm | Zero-Cost Debt | Debt ≤ 1 | D/E ≤ 0.05 |"
-    )
-    divider = (
-        "|------------|------|-----|-----|-----|-----|----------------|----------|-------------|"
-    )
+def render_table(rows: Iterable[Record]) -> List[str]:
+    header = "| Instrument | Year | DDa | DDm | PDa | PDm |"
+    divider = "|------------|------|-----|-----|-----|-----|"
     lines = [header, divider]
     for record in rows:
-        zero_cost = format_flag(in_zero_cost_group(record, dataset=dataset))
-        low_debt = format_flag(in_low_debt_group(record, dataset=dataset))
-        low_leverage = format_flag(in_low_leverage_group(record, dataset=dataset))
         lines.append(
-            "| {instrument:<10} | {year:>4} | {dda:>5} | {ddm:>5} | {pda:>5} | {pdm:>5} | {zero:<14} | {debt:<8} | {lever:<11} |".format(
-                instrument=record.instrument,
-                year=record.year,
-                dda=format_dd(record.dda),
-                ddm=format_dd(record.ddm),
-                pda=format_pd(record.pda),
-                pdm=format_pd(record.pdm),
-                zero=zero_cost,
-                debt=low_debt,
-                lever=low_leverage,
-            )
+            f"| {record.instrument:<10} | {record.year:>4} | {format_dd(record.dda):>5} | {format_dd(record.ddm):>5} | {format_pd(record.pda):>5} | {format_pd(record.pdm):>5} |"
         )
     return lines
-
-
-def summarize_groups(records: Iterable[Record], *, dataset: str) -> List[str]:
-    rows = list(records)
-    total = len(rows)
-    zero_cost = sum(1 for r in rows if in_zero_cost_group(r, dataset=dataset))
-    low_debt = sum(1 for r in rows if in_low_debt_group(r, dataset=dataset))
-    low_leverage = sum(1 for r in rows if in_low_leverage_group(r, dataset=dataset))
-
-    return [
-        f"* Total outliers: **{total}**",
-        f"* Zero-cost debt inputs: **{zero_cost}**",
-        f"* Recorded debt ≤ 1: **{low_debt}**",
-        f"* Debt-to-equity ratio ≤ 0.05: **{low_leverage}**",
-    ]
 
 
 def build_section(records: Iterable[Record], *, dataset: str) -> List[str]:
@@ -189,12 +153,24 @@ def build_section(records: Iterable[Record], *, dataset: str) -> List[str]:
     out.append(f"## {dataset_label} DD Outliers")
     out.append("")
 
-    out.extend(summarize_groups(records, dataset=dataset))
-    out.append("")
+    def sort_rows(rows: Iterable[Record]) -> List[Record]:
+        return sorted(rows, key=lambda r: (r.instrument, r.year))
 
-    sorted_rows = sorted(records, key=lambda r: (r.instrument, r.year))
-    out.extend(render_table(sorted_rows, dataset=dataset))
-    out.append("")
+    groups = [
+        ("Zero-Cost Debt Inputs", lambda r: in_zero_cost_group(r, dataset=dataset)),
+        ("Recorded Debt ≤ 1", lambda r: in_low_debt_group(r, dataset=dataset)),
+        ("Debt-to-Equity Ratio ≤ 0.05", lambda r: in_low_leverage_group(r, dataset=dataset)),
+    ]
+
+    for title, predicate in groups:
+        filtered = [r for r in records if predicate(r)]
+        out.append(f"### {title}")
+        out.append("")
+        if filtered:
+            out.extend(render_table(sort_rows(filtered)))
+        else:
+            out.append("(none)")
+        out.append("")
 
     return out
 
