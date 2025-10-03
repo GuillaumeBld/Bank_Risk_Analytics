@@ -1,9 +1,3 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a//dev/null b/docs/reference/outlier.md
-index 0000000000000000000000000000000000000000..d7e63f42849742b5451645aa2bd9754dcd2633a7 100644
---- a//dev/null
-+++ b/docs/reference/outlier.md
-@@ -0,0 +1,301 @@
 +# Distance-to-Default Outliers (>13)
 +
 +This document lists bank-year combinations with accounting (DDa) or market (DDm) distance-to-default scores above 13. Each table highlights why a case is considered an outlier—zero-cost debt assumptions, negligible recorded debt, or very low leverage—and reports both DDa/DDm and their associated probabilities of default (PDa/PDm).
@@ -306,5 +300,3 @@ index 0000000000000000000000000000000000000000..d7e63f42849742b5451645aa2bd9754d
 +| WSBF       | 2021 | 21.04 | 15.27 | 1.32e-98 | 5.99e-53 |
 +
  
-EOF
-)
