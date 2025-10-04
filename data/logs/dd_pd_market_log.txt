@@ -611,3 +611,419 @@ Expected order of magnitude ~= 1 when both legs are in USD.
 
 Rows with missing DDm: 20
 Rows with missing PDm: 20
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1422
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+no_converge    1406
+no_debt          16
+
+Distance to Default (DD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Probability of Default (PD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Unit check (market_cap / F_values) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 1422
+Rows with missing PD_m: 1422
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1422
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+no_converge    1406
+no_debt          16
+
+Distance to Default (DD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Probability of Default (PD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Unit check (market_cap / F_values) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 1422
+Rows with missing PD_m: 1422
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1422
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+no_converge    1406
+no_debt          16
+
+Distance to Default (DD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Probability of Default (PD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Unit check (market_cap / F_values) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 1422
+Rows with missing PD_m: 1422
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1422
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+no_converge    1406
+no_debt          16
+
+Distance to Default (DD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Probability of Default (PD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Unit check (market_cap / F_values) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 1422
+Rows with missing PD_m: 1422
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1406
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+no_converge       931
+invalid_inputs    475
+
+Distance to Default (DD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Probability of Default (PD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Unit check (market_cap / F_values) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 1406
+Rows with missing PD_m: 1406
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1406
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+no_converge       931
+invalid_inputs    475
+
+Distance to Default (DD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Probability of Default (PD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Unit check (market_cap / F_values) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 1406
+Rows with missing PD_m: 1406
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1406
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+no_converge       931
+invalid_inputs    475
+
+Distance to Default (DD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Probability of Default (PD_m) summary:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+
+Unit check (market_cap / F_values) median: 2.634
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 1406
+Rows with missing PD_m: 1406
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1404
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs (solver_status=invalid_inputs):
+instrument  year                missing_fields  solver_status
+      COFS  2018                    market_cap invalid_inputs
+      COFS  2019 market_cap, equity_volatility invalid_inputs
+
+Surviving rows by year after input validation:
+year
+2016     69
+2017    138
+2018    197
+2019    213
+2020    218
+2021    216
+2022    217
+2023    154
+Solver status counts:
+solver_status
+converged     929
+no_sigma_E    475
+
+Distance to Default (DD_m) summary:
+count    929.000000
+mean      12.173857
+std        8.001429
+min        1.946932
+25%        6.436153
+50%        9.534795
+75%       15.071978
+max       35.000000
+
+Probability of Default (PD_m) summary:
+count     9.290000e+02
+mean      8.226178e-05
+std       1.094558e-03
+min      1.124911e-268
+25%       1.237942e-51
+50%       7.509075e-22
+75%       6.126959e-11
+max       2.577147e-02
+
+Unit check (market_cap / F_values) median: 2.637
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 475
+Rows with missing PD_m: 475
