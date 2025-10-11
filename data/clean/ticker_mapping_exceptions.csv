@@ -1,0 +1,13 @@
+return_instrument,list_bank_ticker,reason,notes
+BHLIP.PK,BHLB,suffix_variation,Strip .PK suffix
+BRKL.O,BRKL,suffix_present,Strip .O suffix
+CIZNV.OQ,CIZN,spelling_variation,CIZnv vs CIZN - same bank
+DFS.N,DFS,suffix_present,Strip .N suffix
+EBTC.OQ,EBTC,suffix_present,Strip .OQ suffix
+EVBN.K,EVBN,suffix_present,Strip .K suffix
+FLIC.OQ,FLIC,suffix_present,Strip .OQ suffix
+GNTY.K,GNTY,suffix_present,Strip .K suffix
+MCHB,HMST,ticker_change,HomeStreet merged with Mechanics Bancorp - use old ticker HMST
+OPOF.O,OPOF,suffix_present,Strip .O suffix
+PPBI.O,PPBI,suffix_present,Strip .O suffix
+PWOD.O,PWOD,suffix_present,Strip .O suffix

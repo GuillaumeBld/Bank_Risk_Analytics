@@ -36,16 +36,17 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [What is Distance to Default?](#what-is-distance-to-default)
-3. [What is Probability of Default?](#what-is-probability-of-default)
-4. [The Merton Model Foundation](#the-merton-model-foundation)
-5. [Market-Based Approach](#market-based-approach)
-6. [Accounting-Based Approach](#accounting-based-approach)
-7. [Comparing Both Approaches](#comparing-both-approaches)
-8. [Data Quality: Trimming and Exclusions](#data-quality-trimming-and-exclusions)
-9. [Results Interpretation](#results-interpretation)
-10. [Walkthrough Examples](#walkthrough-examples)
-11. [Appendix: Why d₂ is the z-score](#appendix)
+2. [Data Sources and Equity Volatility Methodology](#data-sources-and-equity-volatility-methodology)
+3. [What is Distance to Default?](#what-is-distance-to-default)
+4. [What is Probability of Default?](#what-is-probability-of-default)
+5. [The Merton Model Foundation](#the-merton-model-foundation)
+6. [Market-Based Approach](#market-based-approach)
+7. [Accounting-Based Approach](#accounting-based-approach)
+8. [Comparing Both Approaches](#comparing-both-approaches)
+9. [Data Quality: Trimming and Exclusions](#data-quality-trimming-and-exclusions)
+10. [Results Interpretation](#results-interpretation)
+11. [Walkthrough Examples](#walkthrough-examples)
+12. [Appendix: Why d₂ is the z-score](#appendix)
 
 ---
 
@@ -70,10 +71,11 @@ We calculate DD/PD using four Jupyter notebooks:
 3. **`merging.ipynb`** → Combines both approaches with ESG data
 4. **`trim.ipynb`** → Removes unusual banks and extreme values
 
-**Final Output**: `esg_0718.csv` with 1,431 bank-year observations (2016-2023)
-- Contains DD_a, PD_a (accounting)
-- Contains DD_m, PD_m (market)
+**Final Output**: `esg_dd_pd_20251011_043202.csv` with 1,424 bank-year observations (2016-2023)
+- Contains DD_a, PD_a (accounting) - 1,290 non-null (90.6%)
+- Contains DD_m, PD_m (market) - 1,290 non-null (90.6%)
 - Contains ESG scores and controls
+- 244 unique banking institutions
 - Includes all observations (excluded ones have DD = NaN)
 
 ### Theoretical Foundation
@@ -84,6 +86,206 @@ The foundation comes from Merton (1974), who viewed equity as a call option on f
 - Merton, R. C. (1974). "On the Pricing of Corporate Debt: The Risk Structure of Interest Rates"
 - Bharath, S. T., & Shumway, T. (2008). "Forecasting Default with the Merton Distance to Default Model"
 - Tepe, M., Thastrom, P., and Chang, R. (2022). "How Does ESG Activities Affect Default Risk"
+
+---
+
+## Data Sources and Equity Volatility Methodology
+
+### Overview
+
+This section describes the data sources, equity volatility calculation methods, and quality control procedures used in our Distance to Default analysis covering 2016-2023.
+
+### Data Sources
+
+| Data Type | Source | Period | Description |
+|-----------|--------|--------|-------------|
+| **Total Returns** | CRSP | 2013-2023 | Monthly total returns including dividends (3-year lookback) |
+| **Market Data** | Bloomberg, CRSP | 2016-2023 | Stock prices, market capitalization |
+| **Accounting Data** | Compustat, S&P Capital IQ | 2016-2023 | Balance sheet items, liabilities |
+| **Risk-Free Rate** | Federal Reserve | 2016-2023 | 1-year Treasury rate |
+
+**Coverage**: 1,424 bank-year observations across 2016-2023 period (244 unique institutions).
+
+---
+
+### Equity Volatility Calculation
+
+Equity volatility (σ_E) is estimated using a hierarchical approach with three methods, prioritized by data quality:
+
+#### Primary Method: 36-Month Rolling Standard Deviation
+
+**Formula**:
+```
+σ_{E,t-1} = √12 × std(r_{t-36:t-1})
+```
+
+Where:
+- **r_t = ln(P_t / P_{t-1})**: Monthly log returns
+- **√12**: Annualization factor
+- **Window**: 36 months ending at t-1 (no lookahead bias)
+
+**Requirements**: Minimum 9 valid monthly returns in the 36-month window.
+
+**Coverage**: Approximately 98% of observations with sufficient data history.
+
+---
+
+#### Fallback 1: Exponentially Weighted Moving Average (EWMA)
+
+Used when <36 months of data available but ≥12 months present.
+
+**Formula**:
+```
+σ²_t = λ × σ²_{t-1} + (1-λ) × r²_t
+```
+
+Where:
+- **λ = 0.94**: Decay factor (RiskMetrics standard)
+- **Initialization**: Equal-weighted std of available returns
+
+**Coverage**: Approximately 1-2% of observations.
+
+---
+
+#### Fallback 2: Peer Median
+
+Used when insufficient individual return data (<12 months).
+
+**Method**: 
+- Assign banks to size buckets (large/mid/small) based on total assets
+- Use median σ_E of all banks in same size bucket and year
+- Peer volatility computed from Tier 1 banks only
+
+**Coverage**: <1% of observations.
+
+---
+
+### Data Quality Tiers
+
+Banks are classified into three tiers based on total return data availability:
+
+| Tier | Criteria | Status |
+|------|----------|--------|
+| **Tier 1** | ≥9 valid months in 36-month window | Full calculation, primary method |
+| **Tier 2** | <9 months, has annual return | Annual fallback method |
+| **Tier 3** | Insufficient data | Excluded from DD/PD |
+
+**Final Dataset Coverage**: 
+- 1,424 total bank-year observations (2016-2023)
+- 1,290 observations with DD/PD calculated (90.6%)
+- 134 observations excluded due to insufficient data (9.4%)
+
+**Quality Principle**: Tier 1 and 2 observations receive DD/PD estimates. Tier 3 observations are retained in dataset but have DD = NaN.
+
+---
+
+### Provenance Tracking
+
+Each σ_E value includes complete metadata for audit and transparency:
+
+| Field | Description | Example Values |
+|-------|-------------|----------------|
+| **sigma_E_method** | Calculation method used | monthly36, monthly_ewma, peer_median |
+| **sigma_E_window_months** | Actual window length | 12, 24, 36 |
+| **sigmaE_window_start_year** | Window start year | 2015 (for 2018 calculation) |
+| **sigmaE_window_end_year** | Window end year | 2017 (for 2018 calculation) |
+| **obs_count** | Number of valid returns | 36 (maximum) |
+
+**Example**: For 2018 DD calculation:
+- **σ_E computed from**: Jan 2015 - Dec 2017 (36 months)
+- **Window end**: 2017 (t-1)
+- **No lookahead**: Uses only pre-2018 data
+
+---
+
+### Quality Control Filters
+
+Additional filters applied after volatility calculation:
+
+| Filter | Threshold | Rationale |
+|--------|-----------|-----------|
+| **Leverage Floor** | TD/TA < 2% | Exclude atypical capital structures |
+| **Trimming** | 1st/99th percentile by year-size | Remove outliers |
+| **Volatility Range** | 0.01% - 300% | Physical reasonableness |
+| **Convergence** | Solver status = "converged" | Ensure solution quality |
+
+**Trimming Procedure**:
+1. Group by year and size bucket (large vs small/mid)
+2. Compute 1st and 99th percentiles of DD within each group
+3. Exclude observations outside these bounds
+4. Applied separately to DD_m and DD_a
+
+---
+
+### Convergence Performance
+
+**Market DD Results** (using improved volatility data):
+- **Total observations**: 1,290 bank-years with DD/PD
+- **Convergence rate**: 100% for observations with sufficient data
+- **Method**: Newton-Raphson with numerical derivatives
+- **Tolerance**: 1e-6 for both price and volatility residuals
+
+**Key Feature**: Uniform application across all years (2016-2023) with no year-specific exceptions or manual adjustments.
+
+---
+
+### Results Summary by Year
+
+**Distribution of DD Values**:
+
+| Year | N (Market) | Mean DD_m | Median DD_m | P90 DD_m | Mean DD_a | Median DD_a |
+|------|------------|-----------|-------------|----------|-----------|-------------|
+| 2016 | 64 | 10.1 | 9.2 | 14.0 | 16.7 | 15.4 |
+| 2017 | 125 | 8.6 | 8.0 | 11.2 | 14.9 | 13.9 |
+| 2018 | 178 | 8.6 | 7.7 | 12.4 | 14.8 | 13.4 |
+| 2019 | 192 | 8.8 | 8.0 | 12.6 | 13.4 | 12.4 |
+| 2020 | 194 | 9.2 | 8.0 | 13.8 | 15.6 | 14.8 |
+| 2021 | 194 | 7.0 | 6.4 | 10.6 | 11.6 | 10.9 |
+| 2022 | 199 | 6.0 | 5.3 | 8.8 | 11.2 | 10.5 |
+| 2023 | 144 | 5.8 | 5.0 | 8.5 | 10.1 | 9.3 |
+
+**Observations**:
+- DD values show reasonable variation across years
+- Market DD (DD_m) ranges from 6-10 (mean), typical for banking sector
+- Accounting DD (DD_a) consistently higher, reflecting balance sheet conservatism
+- 2020 (COVID-19) shows elevated DD, consistent with increased volatility
+- Post-2020 decline reflects rising interest rates and market uncertainty
+
+---
+
+### Method Distribution
+
+**Primary Method Dominance**:
+
+| Method | Approximate % | Description |
+|--------|---------------|-------------|
+| **monthly36** | ~98% | Full 36-month rolling window |
+| **monthly_ewma** | ~1-2% | EWMA with limited data |
+| **peer_median** | <1% | Size-based peer fallback |
+
+**Quality Assessment**: >95% coverage with primary method indicates robust data availability across the sample period (2016-2023).
+
+---
+
+### Time Integrity Guarantees
+
+**No Lookahead Bias**:
+- σ_{E,t-1} window **ends strictly at year t-1**
+- For 2018 DD: σ_E computed from 2015-2017 only
+- For 2023 DD: σ_E computed from 2020-2022 only
+- All provenance fields verify correct time indexing
+
+**Window Validation**:
+```
+sigmaE_window_end_year = year - 1  (always)
+sigmaE_window_start_year = window_end_year - (months/12 - 1)
+```
+
+**Example for 36-month window**:
+- year = 2018
+- window_end = 2017
+- window_start = 2017 - 2 = 2015
+- Covers: Jan 2015 - Dec 2017 (full 36 months before 2018)
 
 ---
 
@@ -350,10 +552,9 @@ We **exclude** banks that don't fit the standard banking model:
 
 **Impact**:
 ```
-Total observations: 1,431
-Excluded for low leverage (TD/TA < 2%): 184 (12.9%)
-Excluded for other reasons: ~60 (4.2%)
-Valid for DD calculation: 1,187 (82.9%)
+Total observations: 1,424
+Excluded for insufficient data: 134 (9.4%)
+Valid for DD/PD calculation: 1,290 (90.6%)
 ```
 
 #### Stage 2: Trimming Extreme Values (After Calculation)
@@ -409,12 +610,10 @@ This means:
 
 | Metric | Value |
 |--------|-------|
-| Total observations | 1,431 |
-| DD_a available | 1,191 (83.2%) |
-| DD_m available | 784 (54.8%) |
-| Excluded (low leverage) | 184 (12.9%) |
-| Excluded (no equity data) | 410 (28.6%) |
-| Trimmed (extreme values) | ~40-50 (3-4%) |
+| Total observations | 1,424 |
+| DD_a available | 1,290 (90.6%) |
+| DD_m available | 1,290 (90.6%) |
+| Excluded (insufficient data) | 134 (9.4%) |
 
 **2018 Specific Impact** (our problematic year):
 - Before leverage filter: DD_a mean = 28.88, max = 124.17
@@ -441,19 +640,19 @@ This means:
 
 ### Current Sample Statistics (After Exclusions & Trimming)
 
-**Final Dataset**: 1,431 total observations (2016-2023)
+**Final Dataset**: 1,424 total observations (2016-2023)
 
 **DD_a (Accounting Distance-to-Default)**:
-- Available: 1,191 observations (83.2%)
+- Available: 1,290 observations (90.6%)
 - Mean: ~18.5 standard deviations
 - Median: ~16.0 standard deviations
 - Range: 4.39 to 114.23
 
 **DD_m (Market Distance-to-Default)**:
-- Available: 784 observations (54.8%)
-- Mean: ~11.5 standard deviations
-- Median: ~9.2 standard deviations
-- Range: 2.42 to 35.00 (capped by solver)
+- Available: 1,290 observations (90.6%)
+- Mean: ~8.1 standard deviations (across 2016-2023)
+- Median: ~7.4 standard deviations
+- Range: 2.4 to 35.0 (solver numerical limit)
 
 ### What These Numbers Mean
 
@@ -763,7 +962,7 @@ print(f"Other years DD_a mean: {df_other['DD_a'].mean():.2f}")
 
 ## Document Information
 
-**Last Updated**: October 8, 2025  
-**Version**: 2.0 (Includes leverage filter and current statistics)  
-**Notebooks**: dd_pd_accounting.ipynb, dd_pd_market.ipynb, merging.ipynb, trim.ipynb  
-**Final Dataset**: data/outputs/datasheet/esg_0718.csv (1,431 observations)
+**Last Updated**: October 11, 2025  
+**Version**: 3.0 (Comprehensive methodology with improved equity volatility)  
+**Notebooks**: dd_pd_accounting.ipynb, dd_pd_market.ipynb, merging.ipynb  
+**Final Dataset**: data/outputs/datasheet/esg_dd_pd_20251011_043202.csv (1,424 observations, 244 unique banks)

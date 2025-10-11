@@ -1027,3 +1027,196 @@ Expected order of magnitude ~= 1 when both legs are in USD.
 
 Rows with missing DD_m: 475
 Rows with missing PD_m: 475
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1289
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs: none.
+
+Surviving rows by year after input validation:
+year
+2016     64
+2017    125
+2018    182
+2019    194
+2020    197
+2021    200
+2022    202
+2023    145
+Solver status counts:
+solver_status
+converged     854
+no_sigma_E    435
+
+Distance to Default (DD_m) summary:
+count    854.000000
+mean      12.156631
+std        7.948551
+min        2.192790
+25%        6.449779
+50%        9.538566
+75%       15.106819
+max       35.000000
+
+Probability of Default (PD_m) summary:
+count     8.540000e+02
+mean      5.524097e-05
+std       7.229407e-04
+min      1.124911e-268
+25%       7.685700e-52
+50%       7.245797e-22
+75%       5.601987e-11
+max       1.416127e-02
+
+Unit check (market_cap / F_values) median: 2.620
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 435
+Rows with missing PD_m: 435
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1305
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs: none.
+
+Surviving rows by year after input validation:
+year
+2016     64
+2017    125
+2018    182
+2019    194
+2020    197
+2021    200
+2022    202
+2023    145
+Solver status counts:
+solver_status
+converged    1305
+
+Distance to Default (DD_m) summary:
+count    1305.000000
+mean        7.813014
+std         3.997460
+min         0.899636
+25%         5.362559
+50%         7.139359
+75%         9.153400
+max        35.000000
+
+Probability of Default (PD_m) summary:
+count     1.305000e+03
+mean      5.112168e-04
+std       8.210418e-03
+min      1.124911e-268
+25%       2.758450e-20
+50%       4.688373e-13
+75%       4.102562e-08
+max       1.841571e-01
+
+Unit check (market_cap / F_values) median: 2.574
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 0
+Rows with missing PD_m: 0
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1305
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs: none.
+
+Surviving rows by year after input validation:
+year
+2016     64
+2017    125
+2018    182
+2019    194
+2020    197
+2021    200
+2022    202
+2023    145
+Solver status counts:
+solver_status
+converged    1305
+
+Distance to Default (DD_m) summary:
+count    1305.000000
+mean        7.813014
+std         3.997460
+min         0.899636
+25%         5.362559
+50%         7.139359
+75%         9.153400
+max        35.000000
+
+Probability of Default (PD_m) summary:
+count     1.305000e+03
+mean      5.112168e-04
+std       8.210418e-03
+min      1.124911e-268
+25%       2.758450e-20
+50%       4.688373e-13
+75%       4.102562e-08
+max       1.841571e-01
+
+Unit check (market_cap / F_values) median: 2.574
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 0
+Rows with missing PD_m: 0
+
+=== DD/PD Market-Based Model Diagnostics ===
+Total rows processed: 1305
+
+Deduplicated instrument-year rows (kept max debt_total):
+Duplicate PNC 2018: kept debt_total=60,263.0; dropped=60,263.0, 57,419.0, 57,419.0
+
+Rows dropped due to invalid inputs: none.
+
+Surviving rows by year after input validation:
+year
+2016     64
+2017    125
+2018    182
+2019    194
+2020    197
+2021    200
+2022    202
+2023    145
+Solver status counts:
+solver_status
+converged    1305
+
+Distance to Default (DD_m) summary:
+count    1305.000000
+mean        7.813014
+std         3.997460
+min         0.899636
+25%         5.362559
+50%         7.139359
+75%         9.153400
+max        35.000000
+
+Probability of Default (PD_m) summary:
+count     1.305000e+03
+mean      5.112168e-04
+std       8.210418e-03
+min      1.124911e-268
+25%       2.758450e-20
+50%       4.688373e-13
+75%       4.102562e-08
+max       1.841571e-01
+
+Unit check (market_cap / F_values) median: 2.574
+Expected order of magnitude ~= 1 when both legs are in USD.
+
+Rows with missing DD_m: 0
+Rows with missing PD_m: 0
