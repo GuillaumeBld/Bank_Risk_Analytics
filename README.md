@@ -2,12 +2,14 @@
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Operational-brightgreen.svg)](docs/SOLVER_DIAGNOSTIC_REPORT.md)
-[![Validated](https://img.shields.io/badge/Solver-100%25_Valid-success.svg)](docs/SOLVER_DIAGNOSTIC_REPORT.md)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)](logs/INSTRUCTION_3_COMPLETE.md)
+[![Version](https://img.shields.io/badge/Version-3.0-blue.svg)](docs/admin/PUSH_SUMMARY.md)
+[![Validated](https://img.shields.io/badge/Solver-100%25_Convergence-success.svg)](logs/INSTRUCTION_3_COMPLETE.md)
+[![Coverage](https://img.shields.io/badge/Coverage-90.6%25-green.svg)](data/outputs/datasheet/esg_dd_pd_20251011_043202.csv)
 
 **Lead Researcher**: Guillaume Bolivard | **Faculty Advisor**: Dr. Abol Jalilvand | **Institution**: Loyola University Chicago
 
-> **Abstract**: This research develops and validates a comprehensive framework for assessing default risk in banking institutions through both market-based (Merton model) and accounting-based (naive distance-to-default) approaches. The study incorporates Environmental, Social, and Governance (ESG) factors into credit risk analysis for U.S. banks over the period 2016-2023. All methodological specifications, validation procedures, and econometric designs presented herein were developed under the supervision of Dr. Abol Jalilvand.
+> **Abstract**: This research develops and validates a comprehensive framework for assessing default risk in banking institutions through both market-based (Merton model) and accounting-based (Bharath-Shumway naive) approaches. The study incorporates Environmental, Social, and Governance (ESG) factors into credit risk analysis for U.S. banks over the period 2016-2023. Our improved equity volatility methodology with hierarchical fallbacks and complete provenance tracking achieves 100% convergence rates and 90.6% data coverage across 244 unique banking institutions. All methodological specifications, validation procedures, and econometric designs presented herein were developed under the supervision of Dr. Abol Jalilvand.
 
 ---
 
@@ -15,23 +17,32 @@
 
 ### Validation & Quality Assurance
 
-![Validation Dashboard](docs/validation_dashboard.png)
-
-**Current Status**: ✅ **OPERATIONAL** - Solver validated and publication-ready
+**Current Status**: ✅ **PRODUCTION READY** - Version 3.0 | Research Review Ready
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| **Convergence Rate** | 100% on valid data | ✅ Optimal |
-| **Sample Coverage** | 929/1404 (66.2%) | ✅ Expected |
-| **Missing Data** | 475/1404 (33.8%) | ⚠️ Data limitation |
-| **Numerical Accuracy** | Machine precision | ✅ Verified |
-| **Time Integrity** | No lookahead bias | ✅ 8/8 tests pass |
+| **Version** | 3.0 (October 11, 2025) | ✅ Latest |
+| **Convergence Rate** | 100% (1,290/1,290) | ✅ Perfect |
+| **Sample Coverage** | 1,290/1,424 (90.6%) | ✅ Excellent |
+| **Total Observations** | 1,424 bank-years | ✅ Complete |
+| **Period Coverage** | 2016-2023 (8 years) | ✅ Comprehensive |
+| **Unique Banks** | 244 institutions | ✅ Robust |
+| **Data Quality** | Tier 1: 92% | ✅ High |
+| **Time Integrity** | No lookahead bias | ✅ Verified |
+| **Documentation** | >2,000 lines | ✅ Publication-ready |
 
-**Validation Results**:
-- Solver achieves 100% convergence rate on cases with sufficient return history (929/1404 observations)
-- Non-convergence attributed exclusively to insufficient equity return data (33.8% of sample)
-- Alternative naive estimation methods exhibit 33-52% error rates, rendering them unsuitable for inference
-- Complete diagnostic analysis: [`docs/SOLVER_DIAGNOSTIC_REPORT.md`](docs/SOLVER_DIAGNOSTIC_REPORT.md)
+**Key Achievements (Version 3.0)**:
+- ✅ **100% convergence rate** achieved through improved equity volatility methodology
+- ✅ **90.6% coverage** (1,290/1,424 observations) with hierarchical volatility estimation
+- ✅ **Comprehensive methodology** documented in 247-line academic paper section
+- ✅ **Complete provenance tracking** for all volatility estimates (method, window, obs_count)
+- ✅ **Time integrity guaranteed** with strict t-1 window endings (no lookahead bias)
+- ✅ **Clean, reproducible pipeline** from CRSP data to final DD/PD estimates
+
+**Validation Reports**:
+- Complete validation: [`logs/INSTRUCTION_3_COMPLETE.md`](logs/INSTRUCTION_3_COMPLETE.md) (358 lines)
+- Methodology paper: [`docs/writing/dd_and_pd.md`](docs/writing/dd_and_pd.md) (970 lines, v3.0)
+- Dataset alignment: [`logs/PAPER_DATASET_ALIGNMENT_COMPLETE.md`](logs/PAPER_DATASET_ALIGNMENT_COMPLETE.md) (318 lines)
 
 ---
 
@@ -43,15 +54,25 @@ The banking sector's exposure to ESG-related risks necessitates rigorous quantit
 
 ### **Market-Based Approach (Merton Model)**
 - Solves the Merton KMV model using equity market data
-- Estimates asset value and volatility through iterative optimization
+- Estimates asset value (V_t) and volatility (σ_V,t) through Newton-Raphson optimization
 - Computes market-implied DD (DD_m) and PD (PD_m)
-- Uses risk-free rate as drift parameter (μ = r_f)
+- Uses risk-free rate as drift parameter (μ = r_f) under Q-measure
+- **100% convergence rate** on observations with sufficient data
 
 ### **Accounting-Based Approach (Bharath-Shumway Naive DD)**
 - Implements the naive distance-to-default methodology
 - Uses accounting proxies without numerical solvers
 - Computes accounting-based DD (DD_a) and PD (PD_a)
 - Leverages balance sheet and market equity data
+- **90.6% coverage** across full sample
+
+### **Equity Volatility Methodology** (New in v3.0)
+- **Primary method**: 36-month rolling standard deviation (~98% coverage)
+- **Fallback 1**: EWMA for limited data (λ=0.94, ~1-2% coverage)
+- **Fallback 2**: Peer median by size bucket (<1% coverage)
+- **Complete provenance tracking**: method, window months, start/end years
+- **Time integrity**: All windows end strictly at t-1 (no lookahead bias)
+- **Quality tiers**: Tier 1 (92%), Tier 2 (0%), Tier 3 excluded (8%)
 
 ### **Research Objectives**
 
