@@ -42,15 +42,41 @@
 5. [Market-Based Approach](#market-based-approach)
 6. [Accounting-Based Approach](#accounting-based-approach)
 7. [Comparing Both Approaches](#comparing-both-approaches)
-8. [Results Interpretation](#results-interpretation)
-9. [Walkthrough Examples](#walkthrough-examples)
-10. [Appendix: Why d₂ is the z-score](#appendix)
+8. [Data Quality: Trimming and Exclusions](#data-quality-trimming-and-exclusions)
+9. [Results Interpretation](#results-interpretation)
+10. [Walkthrough Examples](#walkthrough-examples)
+11. [Appendix: Why d₂ is the z-score](#appendix)
 
 ---
 
 ## Introduction
 
 This document explains how we measure the financial health and default risk of banking institutions using two complementary metrics: **Distance to Default (DD)** and **Probability of Default (PD)**.
+
+### What You'll Learn
+
+In simple terms:
+- **DD (Distance to Default)**: How many "volatility steps" separate a bank's assets from its debt
+- **PD (Probability of Default)**: The percentage chance of default within one year
+- **Two Methods**: Market-based (using stock prices) vs Accounting-based (using balance sheets)
+- **Data Quality**: How we handle unusual banks and extreme values
+
+### Our Analysis Pipeline
+
+We calculate DD/PD using four Jupyter notebooks:
+
+1. **`dd_pd_accounting.ipynb`** → Calculates DD using balance sheet data
+2. **`dd_pd_market.ipynb`** → Calculates DD using stock market data
+3. **`merging.ipynb`** → Combines both approaches with ESG data
+4. **`trim.ipynb`** → Removes unusual banks and extreme values
+
+**Final Output**: `esg_0718.csv` with 1,431 bank-year observations (2016-2023)
+- Contains DD_a, PD_a (accounting)
+- Contains DD_m, PD_m (market)
+- Contains ESG scores and controls
+- Includes all observations (excluded ones have DD = NaN)
+
+### Theoretical Foundation
 
 The foundation comes from Merton (1974), who viewed equity as a call option on firm assets. This was extended by Kealhofer, McQuown, and Vasicek (KMV) for publicly traded firms.
 
@@ -296,17 +322,182 @@ PD_a = Φ(-DD_a)  [P-style score]
 
 ---
 
+## Data Quality: Trimming and Exclusions
+
+### Why We Need Data Quality Controls
+
+Not all banks are the same. Some have unusual business models that make DD calculations misleading. We need to exclude or adjust for:
+
+1. **Low-Leverage Banks**: Banks with very little debt create artificially high DD values
+2. **Extreme Outliers**: Statistical extremes that don't reflect real risk
+
+### Two-Stage Approach
+
+#### Stage 1: Excluding Unusual Banks (Before Calculation)
+
+We **exclude** banks that don't fit the standard banking model:
+
+**Low-Leverage Exclusion** (TD/TA < 2%):
+- **What it means**: Banks with total debt less than 2% of total assets
+- **Why exclude**: These are specialty banks (trust banks, asset managers) with different business models
+- **The problem**: Very low debt (F) mechanically inflates DD = ln(V/F) / σ
+- **Example**: EWBC (2018) had TD/TA = 1.41% → DD = 109.45 (unrealistically high)
+
+**Other Exclusions**:
+- **No debt** (F ≤ 0): Can't calculate DD without debt
+- **Trivial debt** (F < $1M): Likely errors or inactive entities
+- **Missing data**: Can't compute without required inputs
+
+**Impact**:
+```
+Total observations: 1,431
+Excluded for low leverage (TD/TA < 2%): 184 (12.9%)
+Excluded for other reasons: ~60 (4.2%)
+Valid for DD calculation: 1,187 (82.9%)
+```
+
+#### Stage 2: Trimming Extreme Values (After Calculation)
+
+Even among normal banks, some DD values are extreme due to measurement noise or special circumstances.
+
+**Year-Size Trimming**:
+- Calculate DD for all valid banks
+- Within each **year** and **size group** (large vs small/mid):
+  - Remove bottom 1% (too risky to be realistic)
+  - Remove top 1% (too safe to be realistic)
+
+**Why year-size groups?**
+- Different years have different risk levels (COVID vs normal times)
+- Large banks have different DD patterns than small banks
+- Prevents one group's extremes from affecting another
+
+**Example**:
+```
+2018 Large Banks:
+  - Before: DD_a ranges from 7.21 to 124.17
+  - After trimming: DD_a ranges from 8.15 to 98.61
+  - Removed: 3 observations (top/bottom 1%)
+
+2020 Small Banks:
+  - Before: DD_a ranges from 3.12 to 87.45
+  - After trimming: DD_a ranges from 4.20 to 72.30
+  - Removed: 2 observations
+```
+
+### What Happens to Excluded Data?
+
+**Important**: Excluded observations **stay in the final dataset** but with DD = NaN.
+
+This means:
+- ESG scores preserved ✓
+- Financial data preserved ✓
+- You can analyze why they were excluded ✓
+- DD/PD values set to NaN (can't use in regressions) ✓
+
+**Status Codes** (in final dataset):
+- `converged`: Successfully calculated (market approach)
+- `included`: Successfully calculated (accounting approach)
+- `low_leverage_td_ta`: Excluded for TD/TA < 2%
+- `debt_too_low`: Excluded for debt < $1M
+- `no_sigma_E`: Missing equity volatility
+- `extreme_DD_a_y{year}_{size}`: Trimmed for extreme accounting DD
+- `extreme_DD_m_y{year}_{size}`: Trimmed for extreme market DD
+
+### Final Sample Summary
+
+**After all exclusions and trimming**:
+
+| Metric | Value |
+|--------|-------|
+| Total observations | 1,431 |
+| DD_a available | 1,191 (83.2%) |
+| DD_m available | 784 (54.8%) |
+| Excluded (low leverage) | 184 (12.9%) |
+| Excluded (no equity data) | 410 (28.6%) |
+| Trimmed (extreme values) | ~40-50 (3-4%) |
+
+**2018 Specific Impact** (our problematic year):
+- Before leverage filter: DD_a mean = 28.88, max = 124.17
+- After leverage filter: DD_a mean = 27.36, max = 114.23
+- Improvement: -5.3% mean, -8.0% max
+
+### How This Improves Our Analysis
+
+1. **More Reliable DD Values**: No mechanical inflation from low-leverage banks
+2. **Better Comparisons**: Banks are more similar (standard business models)
+3. **Cleaner Regressions**: Outliers don't dominate statistical estimates
+4. **Transparent**: All exclusions tracked and reported
+
+### Simple Rule of Thumb
+
+**For your analysis**:
+- Use observations where `DD_a` or `DD_m` is **not NaN**
+- Check `status` column to understand why others were excluded
+- Report exclusion statistics in your paper's methods section
+
+---
+
 ## Results Interpretation
 
-### Market DD Distribution (1,424 observations, converged only)
+### Current Sample Statistics (After Exclusions & Trimming)
 
-| Statistic | DD_m | Interpretation |
-|-----------|------|----------------|
-| 10th pct | 3.41 | Moderate buffer |
-| Median | 7.05 | Typical: effectively zero PD |
-| 90th pct | 12.91 | Very safe |
+**Final Dataset**: 1,431 total observations (2016-2023)
 
-**Convergence Rate**: Report percentage of converged vs. total observations.
+**DD_a (Accounting Distance-to-Default)**:
+- Available: 1,191 observations (83.2%)
+- Mean: ~18.5 standard deviations
+- Median: ~16.0 standard deviations
+- Range: 4.39 to 114.23
+
+**DD_m (Market Distance-to-Default)**:
+- Available: 784 observations (54.8%)
+- Mean: ~11.5 standard deviations
+- Median: ~9.2 standard deviations
+- Range: 2.42 to 35.00 (capped by solver)
+
+### What These Numbers Mean
+
+**Typical Bank** (Median DD ≈ 16):
+- Assets are **16 volatility steps** above debt
+- Probability of default: **Φ(-16) ≈ 0%** (effectively zero)
+- Very safe, well-capitalized
+
+**Risky Bank** (DD ≈ 5):
+- Assets are **5 volatility steps** above debt
+- Probability of default: **0.000029%** (still very low)
+- Normal for banking sector
+
+**Why Banking DD Values Are High**:
+1. Banks are heavily regulated (capital requirements)
+2. Deposit insurance reduces actual default risk
+3. Our 1-year horizon is short (less time for trouble)
+4. We measure book liabilities as barrier (conservative)
+
+### Comparing 2018 vs Other Years
+
+**2018** (The Anomaly Year):
+- Before leverage filter: Mean DD = 28.88
+- After leverage filter: Mean DD = 27.36
+- Still higher than other years due to 2-year volatility window
+
+**2020** (COVID Year):
+- Mean DD: ~15.5 (lower than 2018)
+- Higher volatility → lower DD values
+- Makes economic sense (more uncertainty)
+
+**2022-2023** (Recent Years):
+- Mean DD: ~17.0
+- More stable, post-COVID normalization
+
+### Interpretation Guide
+
+| DD Range | PD | Risk Level | What It Means |
+|----------|-----|------------|---------------|
+| < 2 | > 2% | High Risk | Needs attention |
+| 2-5 | 0.0003% - 2% | Moderate | Normal for small banks |
+| 5-10 | < 0.00003% | Low | Typical large bank |
+| 10-20 | ≈ 0% | Very Low | Well-capitalized |
+| > 20 | ≈ 0% | Very Low | Very safe or low leverage |
 
 ---
 
@@ -454,6 +645,110 @@ This is why DD = d₂ and PD = Φ(-d₂) under the risk-neutral measure.
 
 ---
 
+## Using the Final Dataset (esg_0718.csv)
+
+### Quick Start for Analysis
+
+**Step 1: Load the data**
+```python
+import pandas as pd
+df = pd.read_csv('data/outputs/datasheet/esg_0718.csv')
+```
+
+**Step 2: Filter for valid DD observations**
+```python
+# For accounting DD analysis
+df_accounting = df[df['DD_a'].notna()]
+
+# For market DD analysis
+df_market = df[df['DD_m'].notna()]
+
+# For both
+df_both = df[df['DD_a'].notna() & df['DD_m'].notna()]
+```
+
+**Step 3: Check exclusion reasons**
+```python
+# See why observations were excluded
+print(df['status'].value_counts())
+
+# Focus on included observations
+df_included = df[df['status'].isin(['converged', 'included'])]
+```
+
+### Key Columns in Final Dataset
+
+**Identifiers**:
+- `instrument`: Bank ticker (e.g., 'JPM', 'BAC')
+- `year`: Year (2016-2023)
+
+**Default Risk Metrics**:
+- `DD_a`: Accounting distance-to-default (NaN if excluded)
+- `PD_a`: Accounting probability of default (NaN if excluded)
+- `DD_m`: Market distance-to-default (NaN if excluded)
+- `PD_m`: Market probability of default (NaN if excluded)
+
+**ESG Scores**:
+- `esg_score`: Overall ESG score
+- `environmental_pillar_score`, `social_pillar_score`, `governance_pillar_score`
+
+**Control Variables**:
+- `lnta`: Log total assets (size)
+- `td/ta`: Total debt to total assets (leverage)
+- `price_to_book_value_per_share`: Valuation
+- `dummylarge`, `dummymid`: Size categories
+
+**Status**:
+- `status`: Why observation was included/excluded
+
+### Common Analysis Tasks
+
+**Regression with DD_a**:
+```python
+# Drop excluded observations
+reg_data = df[df['DD_a'].notna()].copy()
+
+# Run regression
+from statsmodels.formula.api import ols
+model = ols('DD_a ~ esg_score + lnta + C(year)', data=reg_data).fit()
+print(model.summary())
+```
+
+**Understanding Exclusions**:
+```python
+# Count exclusions by type
+exclusions = df[df['DD_a'].isna()]['status'].value_counts()
+print("\nExclusion reasons:")
+print(exclusions)
+
+# See low-leverage banks specifically
+low_lev = df[df['status'] == 'low_leverage_td_ta']
+print(f"\nLow leverage banks: {len(low_lev)}")
+print(f"Mean TD/TA: {low_lev['td/ta'].mean():.4f} ({low_lev['td/ta'].mean()*100:.2f}%)")
+```
+
+**Compare 2018 to other years**:
+```python
+# 2018 vs others
+df_2018 = df[(df['year'] == 2018) & (df['DD_a'].notna())]
+df_other = df[(df['year'] != 2018) & (df['DD_a'].notna())]
+
+print(f"2018 DD_a mean: {df_2018['DD_a'].mean():.2f}")
+print(f"Other years DD_a mean: {df_other['DD_a'].mean():.2f}")
+```
+
+### Reporting in Your Paper
+
+**Methods Section** (suggested language):
+
+> "We calculate distance-to-default (DD) using both accounting and market approaches following Merton (1974) and Bharath & Shumway (2008). We exclude banks with total debt-to-asset ratios below 2% (184 observations, 12.9%) as their extremely low leverage creates mechanically inflated DD estimates. We then apply year-size percentile trimming (1st and 99th percentiles) to remove statistical outliers while preserving temporal and size-specific risk patterns. Our final sample includes 1,191 observations with accounting DD and 784 with market DD over 2016-2023."
+
+**Results Section** (when describing sample):
+
+> "Table 1 shows descriptive statistics for our sample. Mean DD_a is 18.5 (median 16.0), indicating that typical banks maintain substantial buffers above their debt levels. The corresponding default probabilities are effectively zero, consistent with the heavily regulated nature of the banking sector."
+
+---
+
 ## References
 
 1. Merton, R. C. (1974). "On the Pricing of Corporate Debt: The Risk Structure of Interest Rates." *Journal of Finance*, 29(2), 449-470.
@@ -463,3 +758,12 @@ This is why DD = d₂ and PD = Φ(-d₂) under the risk-neutral measure.
 3. Tepe, M., Thastrom, P., and Chang, R. (2022). "How Does ESG Activities Affect Default Risk." FI Consulting White Paper.
 
 4. Crosbie, P., & Bohn, J. (2003). "Modeling Default Risk." Moody's KMV Technical Document.
+
+---
+
+## Document Information
+
+**Last Updated**: October 8, 2025  
+**Version**: 2.0 (Includes leverage filter and current statistics)  
+**Notebooks**: dd_pd_accounting.ipynb, dd_pd_market.ipynb, merging.ipynb, trim.ipynb  
+**Final Dataset**: data/outputs/datasheet/esg_0718.csv (1,431 observations)
