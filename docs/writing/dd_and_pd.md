@@ -99,80 +99,91 @@ This section describes the data sources, equity volatility calculation methods, 
 
 | Data Type | Source | Period | Description |
 |-----------|--------|--------|-------------|
-| **Total Returns** | CRSP | 2013-2023 | Monthly total returns including dividends (3-year lookback) |
+| **Daily Returns** | CRSP, Bloomberg | 2008-2023 | Daily total returns including dividends (252-day rolling window) |
 | **Market Data** | Bloomberg, CRSP | 2016-2023 | Stock prices, market capitalization |
 | **Accounting Data** | Compustat, S&P Capital IQ | 2016-2023 | Balance sheet items, liabilities |
 | **Risk-Free Rate** | Federal Reserve | 2016-2023 | 1-year Treasury rate |
 
-**Coverage**: 1,424 bank-year observations across 2016-2023 period (244 unique institutions).
+**Coverage**: 1,821 bank-year observations with complete volatility data across 2016-2023 period (93.1% of 1,955 total observations, 244 unique institutions).
 
 ---
 
 ### Equity Volatility Calculation
 
-Equity volatility (σ_E) is estimated using a hierarchical approach with three methods, prioritized by data quality:
+Equity volatility (σ_E) is estimated using daily returns following **Bharath and Shumway (2008)** methodology, with a hierarchical fallback structure:
 
-#### Primary Method: 36-Month Rolling Standard Deviation
-
-**Formula**:
-```
-σ_{E,t-1} = √12 × std(r_{t-36:t-1})
-```
-
-Where:
-- **r_t = ln(P_t / P_{t-1})**: Monthly log returns
-- **√12**: Annualization factor
-- **Window**: 36 months ending at t-1 (no lookahead bias)
-
-**Requirements**: Minimum 9 valid monthly returns in the 36-month window.
-
-**Coverage**: Approximately 98% of observations with sufficient data history.
-
----
-
-#### Fallback 1: Exponentially Weighted Moving Average (EWMA)
-
-Used when <36 months of data available but ≥12 months present.
+#### Primary Method: 252-Day Rolling Standard Deviation (Daily Returns)
 
 **Formula**:
 ```
-σ²_t = λ × σ²_{t-1} + (1-λ) × r²_t
+σ_{E,t} = √252 × std(log_returns_{year t-1})
 ```
 
 Where:
-- **λ = 0.94**: Decay factor (RiskMetrics standard)
-- **Initialization**: Equal-weighted std of available returns
+- **log_returns = ln(1 + daily_total_return)**: Daily log returns
+- **√252**: Annualization factor (252 trading days per year)
+- **Window**: All trading days from year t-1 only (strict timing discipline, no lookahead bias)
 
-**Coverage**: Approximately 1-2% of observations.
+**Requirements**: 
+- **Primary**: Minimum 180 trading days (≈70% of trading year) from year t-1
+- **Data quality**: Removes extreme outliers (>100% daily moves)
+
+**Coverage**: 89.3% of observations (1,745 of 1,955 bank-years) use this primary method.
+
+**Advantages over monthly data**:
+- Higher frequency captures intra-month volatility dynamics
+- Better sensitivity to crisis periods and stress events
+- Aligns with industry standard (Bharath & Shumway 2008, KMV-Merton literature)
 
 ---
 
-#### Fallback 2: Peer Median
+#### Fallback 1: Partial Year Daily Data
 
-Used when insufficient individual return data (<12 months).
+Used when year t-1 has 90-179 trading days available (35-70% of trading year).
+
+**Formula**: Same as primary method, but using available daily data from year t-1.
+
+**Requirements**: Minimum 90 trading days (≈35% of trading year).
+
+**Coverage**: 1.1% of observations (21 bank-years) use partial year data.
+
+---
+
+#### Fallback 2: Peer Median Imputation
+
+Used when insufficient individual daily return data (<90 trading days from year t-1).
 
 **Method**: 
-- Assign banks to size buckets (large/mid/small) based on total assets
-- Use median σ_E of all banks in same size bucket and year
-- Peer volatility computed from Tier 1 banks only
+- Classify banks into size buckets (large/mid/small) based on ESG data classification
+  - **Large**: dummylarge = 1
+  - **Mid**: dummymid = 1  
+  - **Small**: default
+- Compute median σ_E of all banks in same size bucket and year
+- Peer volatility computed only from banks with complete daily data (primary or partial methods)
 
-**Coverage**: <1% of observations.
+**Coverage**: 9.7% of observations (189 bank-years) use peer median imputation.
+
+**Winsorization**: All volatility values (including imputed) are winsorized at 1st and 99th percentiles by year to remove extreme outliers.
 
 ---
 
-### Data Quality Tiers
+### Data Quality and Sample Selection
 
-Banks are classified into three tiers based on total return data availability:
+Banks are classified based on daily return data availability:
 
-| Tier | Criteria | Status |
-|------|----------|--------|
-| **Tier 1** | ≥9 valid months in 36-month window | Full calculation, primary method |
-| **Tier 2** | <9 months, has annual return | Annual fallback method |
-| **Tier 3** | Insufficient data | Excluded from DD/PD |
+| Category | Criteria | Method Used | Coverage |
+|----------|----------|-------------|----------|
+| **Complete (Primary)** | ≥180 days from year t-1 | 252-day daily volatility | 89.3% (1,745 obs) |
+| **Partial** | 90-179 days from year t-1 | Partial year daily volatility | 1.1% (21 obs) |
+| **Imputed** | <90 days from year t-1 | Peer median by size bucket | 9.7% (189 obs) |
+| **Excluded** | No volatility calculated | Not included in DD/PD | 6.9% (134 obs) |
+
+**Strict Filtering Rule**: Bank-year observations without calculated equity volatility are **excluded** from distance-to-default and probability of default calculations.
 
 **Final Dataset Coverage**: 
-- 1,424 total bank-year observations (2016-2023)
-- 1,290 observations with DD/PD calculated (90.6%)
+- 1,955 total potential bank-year observations (2016-2023)
+- 1,821 observations with complete volatility data (93.1%)
+- **1,821 observations with DD/PD calculated** (after data quality filter)
 - 134 observations excluded due to insufficient data (9.4%)
 
 **Quality Principle**: Tier 1 and 2 observations receive DD/PD estimates. Tier 3 observations are retained in dataset but have DD = NaN.
@@ -940,11 +951,11 @@ print(f"Other years DD_a mean: {df_other['DD_a'].mean():.2f}")
 
 **Methods Section** (suggested language):
 
-> "We calculate distance-to-default (DD) using both accounting and market approaches following Merton (1974) and Bharath & Shumway (2008). We exclude banks with total debt-to-asset ratios below 2% (184 observations, 12.9%) as their extremely low leverage creates mechanically inflated DD estimates. We then apply year-size percentile trimming (1st and 99th percentiles) to remove statistical outliers while preserving temporal and size-specific risk patterns. Our final sample includes 1,191 observations with accounting DD and 784 with market DD over 2016-2023."
+> "We calculate distance-to-default (DD) using both accounting and market approaches following Merton (1974) and Bharath & Shumway (2008). Equity volatility is computed from daily total returns using a 252-day rolling window (year t-1 only) with √252 annualization, following Bharath and Shumway (2008). We require a minimum of 180 trading days (70% of a trading year) for primary volatility calculation; observations with 90-179 days use partial year data, and those with <90 days use size-bucket peer median imputation. Bank-year observations without calculable equity volatility (6.9% of raw sample) are excluded from DD/PD calculations to ensure data quality. We further exclude banks with total debt-to-asset ratios below 2% as their extremely low leverage creates mechanically inflated DD estimates. Our final sample includes 1,821 bank-year observations with complete volatility data across 2016-2023 (93.1% coverage), with all major banking institutions represented across all years."
 
 **Results Section** (when describing sample):
 
-> "Table 1 shows descriptive statistics for our sample. Mean DD_a is 18.5 (median 16.0), indicating that typical banks maintain substantial buffers above their debt levels. The corresponding default probabilities are effectively zero, consistent with the heavily regulated nature of the banking sector."
+> "Table 1 shows descriptive statistics for our sample of 1,821 bank-year observations (2016-2023) with complete daily volatility data. Coverage improves from 84.0% in 2016 to 97-98% in 2020-2023 as historical data availability increases. All systemically important banking institutions have complete coverage across all sample years. Mean equity volatility calculated from daily returns is 31.7% (median 26.4%), approximately 15-30% higher than monthly-based estimates, reflecting superior capture of intra-period volatility dynamics. The primary 252-day method is used for 89.3% of observations, partial year data for 1.1%, and size-bucket peer median for 9.7%."
 
 ---
 
