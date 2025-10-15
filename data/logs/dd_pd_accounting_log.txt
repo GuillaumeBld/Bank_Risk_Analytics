@@ -1,46 +1,45 @@
 === Naive DD/PD Diagnostics ===
-Total rows processed: 1431
+Total rows processed: 1366
 
 Naive status counts:
-imputed_sigmaE_sizebucket: 18
-invalid_sigmaV: 118
+imputed_sigmaE_sizebucket: 55
 nonpos_EF: 16
-ok: 1279
+ok: 1295
 
 Fallback indicator counts:
-invalid_sigmaV: 118
+invalid_sigmaV: 0
 fallback_E_from_de: 0
 fallback_E_from_wacc: 0
-imputed_sigmaE_sizebucket: 19
+imputed_sigmaE_sizebucket: 55
 insufficient_returns: 0
 
 Equity source mix:
-E_pb: 1431
+E_pb: 1366
 
 Weak equity proxy count: 0
 DD_naive summary:
-count: 1297.0
-mean: 13.23868385479425
-std: 5.859832203045659
-min: -6.042400466788719
-10%: 7.383662614713753
-25%: 9.442741680647519
-50%: 12.240837498055349
-75%: 15.74723688601354
-90%: 19.85161803392199
-max: 59.282332455673334
-Rows with missing DD_naive: 134
+count: 1350.0
+mean: 11.808151600850124
+std: 5.497494204886808
+min: -5.719525514481579
+10%: 5.391004817640598
+25%: 8.547141121971446
+50%: 11.238609806896324
+75%: 14.281865202467088
+90%: 17.737169629337348
+max: 61.44027090939598
+Rows with missing DD_naive: 16
 
 PD_naive summary:
-count: 1297.0
-mean: 0.0008851625900113119
-std: 0.027860488537089553
+count: 1350.0
+mean: 0.0008508457733253218
+std: 0.02729152157636931
 min: 0.0
-10%: 5.345455080329577e-88
-25%: 3.5874232991030524e-56
-50%: 9.404089775993842e-35
-75%: 1.8157525793987306e-21
-90%: 7.716770539687805e-14
-max: 0.99999999924081
-Rows with missing PD_naive: 134
-PD==0 count: 8, PD==1 count: 0
+10%: 1.2136450950290607e-70
+25%: 1.4264433530872395e-46
+50%: 1.3175316207373527e-29
+75%: 6.309153748571919e-18
+90%: 3.508941290573236e-08
+max: 0.9999999946589033
+Rows with missing PD_naive: 16
+PD==0 count: 3, PD==1 count: 0

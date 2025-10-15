@@ -25,6 +25,14 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.qodo/
+
+#folders
+papers/
+logs/
+tests/
+utils/
+
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -55,3 +63,6 @@ data/logs/
 # Large data files (optional - uncomment if needed)
 # data/outputs/datasheet/*.csv
 # data/outputs/analysis/*.csv
+
+# Archive of working drafts (October 14, 2025)
+archive/2025_10_14_working_drafts/

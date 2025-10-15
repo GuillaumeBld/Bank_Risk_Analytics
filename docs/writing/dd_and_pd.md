@@ -947,6 +947,117 @@ print(f"2018 DD_a mean: {df_2018['DD_a'].mean():.2f}")
 print(f"Other years DD_a mean: {df_other['DD_a'].mean():.2f}")
 ```
 
+---
+
+## Descriptive Statistics: DD and PD Measures
+
+### Summary Statistics (Sample: 1,424 bank-years, 2016-2023)
+
+**Table 1: Overall Descriptive Statistics**
+
+| Statistic | DD_a | DD_m | PD_a | PD_m |
+|-----------|------|------|------|------|
+| **N** | 1,343 | 1,341 | 1,343 | 1,341 |
+| **Mean** | 11.809 | 6.960 | 0.000855 | 0.001506 |
+| **Std Dev** | 5.512 | 3.699 | 0.027 | 0.009 |
+| **Min** | -5.720 | 0.865 | 0.000 | 0.000 |
+| **1st Percentile** | 3.048 | 1.837 | 0.000 | 0.000 |
+| **5th Percentile** | 4.330 | 2.452 | 0.000 | 0.000 |
+| **10th Percentile** | 5.367 | 3.237 | 0.000 | 0.000 |
+| **25th Percentile** | 8.528 | 4.869 | 0.000 | 0.000 |
+| **Median** | 11.238 | 6.361 | 0.000 | 0.000 |
+| **75th Percentile** | 14.314 | 8.180 | 0.000 | 0.000001 |
+| **90th Percentile** | 17.818 | 10.497 | 0.000 | 0.000604 |
+| **95th Percentile** | 20.789 | 13.118 | 0.000007 | 0.007102 |
+| **99th Percentile** | 27.680 | 20.714 | 0.001153 | 0.033134 |
+| **Max** | 61.440 | 35.000 | 1.000 | 0.194 |
+
+**Notes**:
+- DD_a: Distance-to-Default (Accounting approach, Bharath & Shumway naive method)
+- DD_m: Distance-to-Default (Market approach, Merton model with iterative solver)
+- PD_a: Probability of Default (Accounting) = Φ(-DD_a)
+- PD_m: Probability of Default (Market) = Φ(-DD_m)
+- **N Difference**: DD_a has 2 more observations than DD_m (COFS 2018-2019 have accounting data but missing market cap)
+- Higher DD indicates lower default risk; Lower PD indicates lower default probability
+- 94.3% of observations have valid DD_a; 94.2% have valid DD_m
+
+---
+
+**Table 2: Descriptive Statistics by Year**
+
+| Year | N | DD_a Mean | DD_a Median | DD_m Mean | DD_m Median | PD_a Mean | PD_m Mean |
+|------|---|-----------|-------------|-----------|-------------|-----------|-----------|
+| 2016 | 69 | 13.68 | 13.08 | 8.36 | 7.84 | 0.000000 | 0.000000 |
+| 2017 | 138 | 13.20 | 12.27 | 7.63 | 7.12 | 0.000000 | 0.000022 |
+| 2018 | 198 | 13.26 | 12.48 | 7.73 | 7.05 | 0.000050 | 0.000172 |
+| 2019 | 214 | 12.70 | 11.87 | 8.42 | 7.66 | 0.004982 | 0.000013 |
+| 2020 | 218 | 14.49 | 13.50 | 8.57 | 7.56 | 0.000003 | 0.000019 |
+| 2021 | 216 | 5.36 | 4.97 | 3.15 | 2.88 | 0.000682 | 0.009773 |
+| 2022 | 217 | 11.69 | 10.86 | 6.19 | 5.67 | 0.000000 | 0.000043 |
+| 2023 | 154 | 11.92 | 10.81 | 6.81 | 5.95 | 0.000001 | 0.000034 |
+
+**Key Observations**:
+- **2020 (COVID-19)**: Highest DD (14.49), indicating resilience despite pandemic
+- **2021 Anomaly**: Sharp decline in DD (5.36) - data quality issue under investigation
+- **2022-2023**: Return to normal risk levels (DD ~11.7-11.9)
+- Pre-COVID stable period (2016-2019): DD_a ranged 12.70-13.68
+
+---
+
+**Table 3: Descriptive Statistics by Bank Size**
+
+| Size | N | DD_a Mean | DD_a Median | DD_m Mean | DD_m Median | PD_a Mean | PD_m Mean |
+|------|---|-----------|-------------|-----------|-------------|-----------|-----------|
+| **Large** | 32 | 9.19 | 9.58 | 4.91 | 5.11 | 0.000021 | 0.002177 |
+| **Mid** | 64 | 10.73 | 10.60 | 5.93 | 5.88 | 0.000013 | 0.001478 |
+| **Small** | 1,328 | 11.93 | 11.40 | 7.06 | 6.48 | 0.000915 | 0.001490 |
+
+**Counterintuitive Finding**: Larger banks show LOWER DD (higher risk) compared to smaller banks. This contrasts with "too big to fail" expectations and may reflect:
+- Higher leverage ratios in large banks
+- More complex risk profiles captured by market measures
+- Different risk-taking behavior in systemically important institutions
+
+---
+
+**Table 4: Correlation Matrix**
+
+|  | DD_a | DD_m | PD_a | PD_m |
+|---|------|------|------|------|
+| **DD_a** | 1.000 | 0.950 | -0.094 | -0.274 |
+| **DD_m** | 0.950 | 1.000 | -0.015 | -0.244 |
+| **PD_a** | -0.094 | -0.015 | 1.000 | 0.053 |
+| **PD_m** | -0.274 | -0.244 | 0.053 | 1.000 |
+
+**Key Findings**:
+- **Very high correlation (0.950)** between DD_a and DD_m validates both methodologies
+- DD and PD show expected negative relationship
+- Low PD_a and PD_m correlation (0.053) suggests different information captured by each approach
+
+---
+
+### Interpretation for Paper
+
+**Typical Bank Risk Profile**:
+- Median DD_a = 11.24 (very safe, ~11 standard deviations from default)
+- Median PD = essentially zero (75th percentile still at zero)
+- Only top 5% of risky banks have PD_a > 0.000007
+- Reflects heavily regulated, well-capitalized U.S. banking sector
+
+**Distribution Characteristics**:
+- **Right-skewed**: Most banks very safe (median PD ≈ 0), few with elevated risk
+- **DD_a > DD_m**: Accounting approach yields higher DD (more conservative)
+  - Mean DD_a (11.81) vs Mean DD_m (6.96)
+  - Book values more stable than market values
+- **PD concentration**: 75% of banks have PD effectively zero
+
+**Volatility Impact** (Daily vs Monthly):
+- Using daily returns with 252-day window (vs old 36-month monthly)
+- Mean equity volatility: 31.7% (daily) vs 27.0% (monthly) = +17.4% increase
+- Better captures intra-period dynamics, especially during crises
+- Follows Bharath & Shumway (2008) industry standard
+
+---
+
 ### Reporting in Your Paper
 
 **Methods Section** (suggested language):
@@ -955,7 +1066,17 @@ print(f"Other years DD_a mean: {df_other['DD_a'].mean():.2f}")
 
 **Results Section** (when describing sample):
 
-> "Table 1 shows descriptive statistics for our sample of 1,821 bank-year observations (2016-2023) with complete daily volatility data. Coverage improves from 84.0% in 2016 to 97-98% in 2020-2023 as historical data availability increases. All systemically important banking institutions have complete coverage across all sample years. Mean equity volatility calculated from daily returns is 31.7% (median 26.4%), approximately 15-30% higher than monthly-based estimates, reflecting superior capture of intra-period volatility dynamics. The primary 252-day method is used for 89.3% of observations, partial year data for 1.1%, and size-bucket peer median for 9.7%."
+> "Table 1 presents descriptive statistics for distance-to-default and probability of default measures. Our final sample includes 1,424 bank-year observations from 2016-2023, with 1,343 observations (94.3%) having valid DD_a values and 1,341 (94.2%) having valid DD_m values. The two-observation difference reflects missing market capitalization data for COFS in 2018-2019, illustrating the slightly lower coverage of market-based measures compared to accounting-based measures."
+
+> "Mean distance-to-default is 11.81 for the accounting approach and 6.96 for the market approach, indicating substantial buffers against default (11-7 standard deviations). The corresponding mean default probabilities are negligible (0.09% and 0.15%, respectively), with median values effectively zero. The distribution is highly right-skewed: 75% of bank-year observations have PD values at or near zero, reflecting the heavily regulated and well-capitalized nature of the U.S. banking sector. Only the riskiest 5% of observations exhibit PD_a > 0.000007 or PD_m > 0.007."
+
+> "The high correlation between DD_a and DD_m (0.950) validates the consistency of both methodologies, despite DD_a systematically exceeding DD_m. This pattern reflects the greater stability of book values compared to market values, with the accounting approach producing more conservative (higher) distance-to-default estimates."
+
+> "Panel B (Table 2) reveals temporal variation in default risk. The pre-COVID period (2016-2019) exhibited stable risk metrics with DD_a ranging from 12.70 to 13.68. During the COVID-19 pandemic year (2020), distance-to-default increased to 14.49, suggesting banks maintained strong capital buffers despite economic disruption, possibly aided by regulatory forbearance and government support programs. Risk metrics returned to pre-pandemic levels by 2022-2023 (DD_a: 11.69-11.92). Notably, 2021 shows anomalously low DD values (5.36) that warrant further investigation and may reflect data quality issues."
+
+> "Panel C (Table 3) presents an unexpected pattern: larger banks exhibit lower distance-to-default (DD_a: 9.19 for large vs 11.93 for small), suggesting higher default risk. This contrasts with conventional 'too big to fail' expectations and may reflect higher leverage ratios, more complex risk profiles, or different risk-taking behavior in systemically important institutions."
+
+> "Our equity volatility estimates, calculated from daily returns using a 252-day rolling window following Bharath & Shumway (2008), average 31.7% (median 26.4%), approximately 17% higher than previous monthly-based estimates. This higher volatility reflects superior capture of intra-period volatility dynamics, particularly relevant during crisis periods. The primary 252-day method is employed for 89.3% of observations, partial year data (90-179 days) for 1.1%, and size-bucket peer median imputation for 9.7%. Complete volatility coverage spans 93.1% of potential observations, with all systemically important banking institutions having complete coverage across all years."
 
 ---
 
@@ -973,7 +1094,9 @@ print(f"Other years DD_a mean: {df_other['DD_a'].mean():.2f}")
 
 ## Document Information
 
-**Last Updated**: October 11, 2025  
-**Version**: 3.0 (Comprehensive methodology with improved equity volatility)  
+**Last Updated**: October 14, 2025  
+**Version**: 4.0 (Daily volatility migration complete, comprehensive descriptive statistics added)  
 **Notebooks**: dd_pd_accounting.ipynb, dd_pd_market.ipynb, merging.ipynb  
-**Final Dataset**: data/outputs/datasheet/esg_dd_pd_20251011_043202.csv (1,424 observations, 244 unique banks)
+**Final Dataset**: data/outputs/datasheet/esg_dd_pd_20251014_022322.csv (1,424 observations, 244 unique banks)  
+**Volatility Method**: Daily returns, 252-day window (Bharath & Shumway 2008)  
+**Descriptive Tables**: See Tables 1-4 above for complete statistics with all percentiles
