@@ -1,0 +1,31 @@
+
+Migration Analysis Report
+Generated: 2025-10-14 02:16:06
+
+NEW METHOD (Daily 252-Day):
+  Observations: 1955
+  Years: 2016 - 2023
+  Banks: 244
+  Mean volatility: 0.317
+  Median volatility: 0.264
+  
+  Method Distribution:
+    daily_252: 1745 (89.3%)
+    imputed_peer: 189 (9.7%)
+    daily_partial: 21 (1.1%)
+
+OLD METHOD (Annual 3-Year):
+  Observations: 1311
+  Mean volatility: 0.271
+  Median volatility: 0.251
+
+COMPARISON (Overlapping Observations: 1323):
+  Correlation: 0.5085
+  Mean % change: 20.9%
+  Daily higher in 63.1% of cases
+  
+INTERPRETATION:
+  ⚠️ Lower correlation - methods differ significantly
+  ✓ Daily volatility generally higher - expected
+  ✓ Mean change reasonable (<30%)
+

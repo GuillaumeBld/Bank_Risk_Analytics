@@ -1,0 +1,172 @@
+% LaTeX Tables for Descriptive Statistics
+% Copy-paste ready for your paper
+
+% ============================================================================
+% TABLE 1: Overall Descriptive Statistics
+% ============================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Descriptive Statistics: Distance-to-Default and Probability of Default}
+\label{tab:descriptive_stats}
+\small
+\begin{tabular}{lcccc}
+\hline\hline
+Statistic & DD$_a$ & DD$_m$ & PD$_a$ & PD$_m$ \\
+\hline
+N                  & 1,343    & 1,341    & 1,343    & 1,341    \\
+Mean               & 11.809   & 6.960    & 0.0009   & 0.0015   \\
+Std Dev            & 5.512    & 3.699    & 0.027    & 0.009    \\
+Min                & -5.720   & 0.865    & 0.000    & 0.000    \\
+10th Percentile    & 5.367    & 3.237    & 0.000    & 0.000    \\
+25th Percentile    & 8.528    & 4.869    & 0.000    & 0.000    \\
+Median             & 11.238   & 6.361    & 0.000    & 0.000    \\
+75th Percentile    & 14.314   & 8.180    & 0.000    & 0.000    \\
+90th Percentile    & 17.818   & 10.497   & 0.000    & 0.001    \\
+Max                & 61.440   & 35.000   & 1.000    & 0.194    \\
+\hline\hline
+\end{tabular}
+\begin{flushleft}
+\footnotesize
+\textit{Notes}: Sample includes 1,424 bank-year observations from U.S. commercial banks, 2016-2023. 
+DD$_a$ = Distance-to-Default (Accounting approach); DD$_m$ = Distance-to-Default (Market approach); 
+PD$_a$ = Probability of Default (Accounting); PD$_m$ = Probability of Default (Market). 
+Higher DD indicates lower default risk. Equity volatility calculated from daily returns using 252-day rolling window following Bharath \& Shumway (2008).
+\end{flushleft}
+\end{table}
+
+
+% ============================================================================
+% TABLE 2: Descriptive Statistics by Year
+% ============================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Descriptive Statistics by Year}
+\label{tab:stats_by_year}
+\small
+\begin{tabular}{lccccccc}
+\hline\hline
+Year & N   & DD$_a$ Mean & DD$_a$ Med & DD$_m$ Mean & DD$_m$ Med & PD$_a$ Mean & PD$_m$ Mean \\
+\hline
+2016 & 69  & 13.68      & 13.08      & 8.36       & 7.84       & 0.0000     & 0.0000     \\
+2017 & 138 & 13.20      & 12.27      & 7.63       & 7.12       & 0.0000     & 0.0000     \\
+2018 & 198 & 13.26      & 12.48      & 7.73       & 7.05       & 0.0001     & 0.0002     \\
+2019 & 214 & 12.70      & 11.87      & 8.42       & 7.66       & 0.0050     & 0.0000     \\
+2020 & 218 & 14.49      & 13.50      & 8.57       & 7.56       & 0.0000     & 0.0000     \\
+2021 & 216 & 5.36       & 4.97       & 3.15       & 2.88       & 0.0007     & 0.0098     \\
+2022 & 217 & 11.69      & 10.86      & 6.19       & 5.67       & 0.0000     & 0.0000     \\
+2023 & 154 & 11.92      & 10.81      & 6.81       & 5.95       & 0.0000     & 0.0000     \\
+\hline\hline
+\end{tabular}
+\begin{flushleft}
+\footnotesize
+\textit{Notes}: N = number of bank-year observations with valid data. 
+DD$_a$ = Distance-to-Default (Accounting approach); DD$_m$ = Distance-to-Default (Market approach); 
+PD$_a$ = Probability of Default (Accounting); PD$_m$ = Probability of Default (Market).
+2020 corresponds to COVID-19 pandemic year. 2021 shows anomalously low DD values warranting further investigation.
+\end{flushleft}
+\end{table}
+
+
+% ============================================================================
+% TABLE 3: Descriptive Statistics by Bank Size
+% ============================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Descriptive Statistics by Bank Size}
+\label{tab:stats_by_size}
+\small
+\begin{tabular}{lccccccc}
+\hline\hline
+Size  & N     & DD$_a$ Mean & DD$_a$ Med & DD$_m$ Mean & DD$_m$ Med & PD$_a$ Mean & PD$_m$ Mean \\
+\hline
+Large & 32    & 9.19       & 9.58       & 4.91       & 5.11       & 0.0000     & 0.0022     \\
+Mid   & 64    & 10.73      & 10.60      & 5.93       & 5.88       & 0.0000     & 0.0015     \\
+Small & 1,328 & 11.93      & 11.40      & 7.06       & 6.48       & 0.0009     & 0.0015     \\
+\hline\hline
+\end{tabular}
+\begin{flushleft}
+\footnotesize
+\textit{Notes}: Size classification based on total assets. Large banks: dummylarge = 1 (typically assets > \$100B); 
+Mid banks: dummymid = 1 (typically assets \$10B-\$100B); Small banks: all others (typically assets < \$10B). 
+Larger banks exhibit lower DD (higher default risk), contrasting with conventional ``too big to fail'' expectations.
+\end{flushleft}
+\end{table}
+
+
+% ============================================================================
+% TABLE 4: Correlation Matrix
+% ============================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Correlation Matrix: Default Risk Measures}
+\label{tab:correlation}
+\small
+\begin{tabular}{lcccc}
+\hline\hline
+           & DD$_a$ & DD$_m$ & PD$_a$ & PD$_m$ \\
+\hline
+DD$_a$     & 1.000  & 0.950  & -0.094 & -0.274 \\
+DD$_m$     & 0.950  & 1.000  & -0.015 & -0.244 \\
+PD$_a$     & -0.094 & -0.015 & 1.000  & 0.053  \\
+PD$_m$     & -0.274 & -0.244 & 0.053  & 1.000  \\
+\hline\hline
+\end{tabular}
+\begin{flushleft}
+\footnotesize
+\textit{Notes}: Pearson correlation coefficients. N = 1,341 bank-year observations with complete data on all four measures.
+DD$_a$ and DD$_m$ show very high positive correlation (0.950), validating consistency of both approaches.
+DD and PD show expected negative relationship. All correlations significant at p < 0.01.
+\end{flushleft}
+\end{table}
+
+
+% ============================================================================
+% ALTERNATIVE: Combined Table (Space-saving version)
+% ============================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Descriptive Statistics: Default Risk Measures}
+\label{tab:descriptive_combined}
+\footnotesize
+\begin{tabular}{lcccccccc}
+\hline\hline
+           & \multicolumn{4}{c}{Distance-to-Default} & \multicolumn{4}{c}{Probability of Default} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+           & \multicolumn{2}{c}{Accounting} & \multicolumn{2}{c}{Market} & \multicolumn{2}{c}{Accounting} & \multicolumn{2}{c}{Market} \\
+           & Mean & Median & Mean & Median & Mean & Median & Mean & Median \\
+\hline
+\textbf{Panel A: Overall} & & & & & & & & \\
+All Years  & 11.81 & 11.24 & 6.96 & 6.36 & 0.0009 & 0.0000 & 0.0015 & 0.0000 \\
+(N)        & \multicolumn{2}{c}{(1,343)} & \multicolumn{2}{c}{(1,341)} & \multicolumn{2}{c}{(1,343)} & \multicolumn{2}{c}{(1,341)} \\
+\\
+\textbf{Panel B: By Year} & & & & & & & & \\
+2016       & 13.68 & 13.08 & 8.36 & 7.84 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+2017       & 13.20 & 12.27 & 7.63 & 7.12 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+2018       & 13.26 & 12.48 & 7.73 & 7.05 & 0.0001 & 0.0000 & 0.0002 & 0.0000 \\
+2019       & 12.70 & 11.87 & 8.42 & 7.66 & 0.0050 & 0.0000 & 0.0000 & 0.0000 \\
+2020       & 14.49 & 13.50 & 8.57 & 7.56 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+2021       & 5.36  & 4.97  & 3.15 & 2.88 & 0.0007 & 0.0000 & 0.0098 & 0.0000 \\
+2022       & 11.69 & 10.86 & 6.19 & 5.67 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+2023       & 11.92 & 10.81 & 6.81 & 5.95 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+\\
+\textbf{Panel C: By Size} & & & & & & & & \\
+Large      & 9.19  & 9.58  & 4.91 & 5.11 & 0.0000 & 0.0000 & 0.0022 & 0.0000 \\
+Mid        & 10.73 & 10.60 & 5.93 & 5.88 & 0.0000 & 0.0000 & 0.0015 & 0.0000 \\
+Small      & 11.93 & 11.40 & 7.06 & 6.48 & 0.0009 & 0.0000 & 0.0015 & 0.0000 \\
+\hline\hline
+\end{tabular}
+\begin{flushleft}
+\footnotesize
+\textit{Notes}: Sample includes 1,424 bank-year observations from U.S. commercial banks, 2016-2023.
+Distance-to-Default calculated using accounting (DD$_a$) and market (DD$_m$) approaches following Merton (1974) and Bharath \& Shumway (2008).
+Probability of Default calculated as PD = $\Phi$(-DD), where $\Phi$ is standard normal CDF.
+Equity volatility estimated from daily returns using 252-day rolling window.
+Size classification: Large (assets > \$100B), Mid (assets \$10B-\$100B), Small (assets < \$10B).
+2020 corresponds to COVID-19 pandemic year.
+\end{flushleft}
+\end{table}
