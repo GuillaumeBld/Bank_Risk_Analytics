@@ -102,3 +102,69 @@ committed panel. All four run start to finish with zero errors.
   `debt_total` gives 0.060 here and fails immediately, where every other band
   catches the defect only after it has passed through the solver. Suggested by a
   downstream consumer of these series.
+
+## 2026-08-27 — corrected drift for the naive model (v4.1)
+
+**`DD_a` and `PD_a` change again. `DD_m` and `PD_m` are unchanged**, because the
+Merton drift is the risk-free rate and never touched `rit`.
+
+### The defect
+
+`Book2_clean.csv` carries a `rit` column, the annual equity return. It is the
+drift of the Bharath-Shumway model, and `DD_a` correlates **0.96** with it, so
+it drives the accounting series almost entirely.
+
+It disagrees with two independent measures of the same quantity:
+
+| Pair | Correlation |
+|---|---|
+| monthly-compounded vs change in market cap | **0.928** |
+| `rit` vs monthly-compounded | 0.460 |
+| `rit` vs change in market cap | 0.403 |
+
+Two sources agree with each other and disagree with `rit`. That makes `rit` the
+outlier, not the referee. JPMorgan returned about 47% in 2019: the monthly file
+gives 0.4727, the market cap change 0.4280, `rit` gives 0.1831.
+
+For Signature Bank `rit` is not merely wrong but **impossible**, reporting
+**-424%** and **-238%** in consecutive years. A shareholder cannot lose more
+than the position. Those two rows produced the worst `DD_a` values in the
+shipped panel, -29.7 and -17.0. The v3.0 notebook printed a warning about `rit`
+falling outside [-1, 1] and then used the value anyway; the first version of
+this pipeline dropped even the warning.
+
+### The fix
+
+The drift is compounded from `raw_monthly_total_return_2013_2023 (1).csv`, the
+same file `scripts/02_calculate_equity_volatility.py` already trusts to build
+`sigma_E`. The volatility and the drift of one model now come from one source.
+
+`ddpd/models.py` additionally rejects any drift outside [-0.99, 3.0] rather than
+clipping it: an impossible return is a broken input, and clipping invents a
+number for a bank-year that cannot be measured.
+
+### Effect
+
+| `DD_a` | v4.0 | v4.1 |
+|---|---|---|
+| rows | 1,082 | **1,286** |
+| min | -29.73 | **-3.24** |
+| skew | -2.13 | **0.59** |
+| kurtosis | **71.34** | **0.59** |
+| share of `PD_a` above 1e-6 | 98.7% | 91.1% |
+
+Correlation with the v4.0 series is **0.499** (rank 0.709), so this is a second
+material change rather than a rescaling.
+
+Coverage rises because the monthly file starts in 2013, so a lagged drift exists
+for 2016. The v4.0 note that every bank loses its first panel year no longer
+holds: 1,336 rows take the compounded return, 54 fall back to a plausible `rit`
+where the bank is absent from the monthly file, and 32 have no drift at all.
+
+### How it was found
+
+A downstream consumer reported that specifications on `DD_a` passing their
+diagnostics fell from 15 to 3 against the v4.0 series, and offered the
+explanation that the old degenerate variable had been passing specification
+tests without measuring anything. That is partly true, but checking the tail
+instead of accepting the flattering reading surfaced a drift of -424%.

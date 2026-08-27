@@ -33,7 +33,8 @@ import numpy as np
 import pandas as pd
 
 from .liabilities import build_liability_panel, crosscheck_against_reference
-from .models import naive_dd, solve_merton
+from .models import PLAUSIBLE_DRIFT, naive_dd, solve_merton
+from .returns import agreement_with_market_cap, annual_returns_from_monthly
 
 MM = 1_000_000.0
 
@@ -44,6 +45,7 @@ class Inputs:
     market_cap: Path
     equity_vol: Path
     risk_free: Path
+    monthly_returns: Path | None = None
     reported: Path | None = None
     reference: Path | None = None
 
@@ -151,16 +153,53 @@ def build(inputs: Inputs) -> tuple[pd.DataFrame, list[str]]:
         - (panel["sigmaE_window_months"] / 12 - 1).clip(lower=0).astype(int)
     )
 
-    # Physical drift for the naive model: the firm's own lagged annual return.
+    # Physical drift for the naive model: the firm's own lagged annual return,
+    # compounded from monthly total returns rather than taken from the `rit`
+    # column. See ddpd/returns.py for why `rit` is not usable.
     panel = panel.sort_values(["ticker", "year"]).reset_index(drop=True)
-    panel["mu_hat"] = panel.groupby("ticker")["rit"].shift(1)
     panel["mu_source_year"] = panel["year"] - 1
+    if inputs.monthly_returns and inputs.monthly_returns.exists():
+        annual = annual_returns_from_monthly(inputs.monthly_returns)
+        agree = agreement_with_market_cap(annual, raw["market_cap"])
+        if not agree.empty:
+            log.append(
+                "drift source: monthly total returns, agreement with the "
+                f"year-on-year change in market cap {agree['annual_return'].corr(agree['market_cap_return']):.3f} "
+                f"on {len(agree)} rows"
+            )
+        lagged = annual.rename(columns={"year": "mu_source_year",
+                                        "annual_return": "mu_hat"})
+        panel = panel.merge(lagged, on=["ticker", "mu_source_year"], how="left",
+                            validate="1:1")
+        panel["mu_from"] = np.where(panel["mu_hat"].notna(), "monthly_compounded", "")
+    else:
+        panel["mu_hat"] = np.nan
+        panel["mu_from"] = ""
+
+    # `rit` is retained only as a last resort, and only where it is plausible,
+    # so a bank absent from the monthly file is not silently dropped.
+    fallback_rit = panel.groupby("ticker")["rit"].shift(1)
+    gap = panel["mu_hat"].isna() & fallback_rit.between(*PLAUSIBLE_DRIFT)
+    panel.loc[gap, "mu_hat"] = fallback_rit[gap]
+    panel.loc[gap, "mu_from"] = "rit_tminus1_fallback"
     # Provenance, and no imputation. Bharath-Shumway's drift is the firm's own
     # lagged return; where there is no prior observation there is no drift, and
     # DD_a is left undefined rather than filled from a peer group. That costs
     # each bank its first panel year (244 rows, one per bank) and is the reason
     # DD_a covers fewer rows than DD_m.
-    panel["mu_method"] = np.where(panel["mu_hat"].notna(), "rit_tminus1", "unavailable")
+    drift_lo, drift_hi = PLAUSIBLE_DRIFT
+    implausible = panel["mu_hat"].notna() & ~panel["mu_hat"].between(drift_lo, drift_hi)
+    panel["mu_method"] = np.where(
+        panel["mu_hat"].isna(), "unavailable",
+        np.where(implausible, "implausible_return", panel["mu_from"]),
+    )
+    if implausible.any():
+        for _, bad in panel.loc[implausible, ["ticker", "year", "mu_hat"]].iterrows():
+            log.append(
+                f"drift rejected {bad['ticker']} {int(bad['year'])}: "
+                f"lagged return {bad['mu_hat']:.4f} is outside "
+                f"[{drift_lo}, {drift_hi}]; a return below -100% is impossible"
+            )
 
     solvable = (
         panel["E"].gt(0) & panel["F"].gt(0)
@@ -219,6 +258,7 @@ def main(argv: list[str] | None = None) -> int:
 
     inputs = Inputs(
         accounting=args.clean_dir / "Book2_clean.csv",
+        monthly_returns=args.clean_dir / "raw_monthly_total_return_2013_2023 (1).csv",
         market_cap=args.clean_dir / "all_banks_marketcap_annual_2016_2023.csv",
         equity_vol=args.clean_dir / "equity_volatility_by_year.csv",
         risk_free=args.clean_dir / "fama_french_factors_annual_clean.csv",

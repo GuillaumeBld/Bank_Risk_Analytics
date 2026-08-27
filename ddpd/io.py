@@ -27,6 +27,7 @@ def default_inputs(root: Path | None = None) -> Inputs:
     clean = (root or repo_root()) / "data" / "clean"
     return Inputs(
         accounting=clean / "Book2_clean.csv",
+        monthly_returns=clean / "raw_monthly_total_return_2013_2023 (1).csv",
         market_cap=clean / "all_banks_marketcap_annual_2016_2023.csv",
         equity_vol=clean / "equity_volatility_by_year.csv",
         risk_free=clean / "fama_french_factors_annual_clean.csv",

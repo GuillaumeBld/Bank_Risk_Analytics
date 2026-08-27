@@ -15,6 +15,14 @@ from scipy.stats import norm
 
 Phi = norm.cdf
 
+#: A total return below -100% is impossible: a shareholder cannot lose more
+#: than the position. Book2_clean.csv contains two such values (SBNY 2018 at
+#: -4.236 and SBNY 2019 at -2.377), and because DD_a correlates 0.96 with its
+#: drift, feeding them through produced the two worst DD_a values in the panel,
+#: -29.7 and -17.0. The legacy notebook printed a warning about this and used
+#: the value anyway. Rows outside this range get no DD_a.
+PLAUSIBLE_DRIFT = (-0.99, 3.0)
+
 #: d1/d2 beyond this are numerically saturated; Phi is 0 or 1 to machine
 #: precision either way, and clipping avoids overflow warnings in exp.
 _D_CLIP = 35.0
@@ -129,6 +137,10 @@ def naive_dd(
     probability and is NOT comparable in level to the risk-neutral PD from
     :func:`solve_merton`.
 
+    A drift outside :data:`PLAUSIBLE_DRIFT` is treated as unusable rather than
+    clipped: an impossible return is a broken input, and clipping it would
+    invent a number for a bank-year we cannot measure.
+
     Returns ``(dd, pd_, sigma_V_hat)``, each NaN where inputs are unusable.
     """
     E = np.asarray(equity, dtype=float)
@@ -137,7 +149,12 @@ def naive_dd(
     mu = np.asarray(drift, dtype=float)
 
     V = E + F
-    ok = (E > 0) & (F > 0) & (sE > 0) & np.isfinite(V) & (V > 0) & np.isfinite(mu)
+    lo, hi = PLAUSIBLE_DRIFT
+    ok = (
+        (E > 0) & (F > 0) & (sE > 0)
+        & np.isfinite(V) & (V > 0)
+        & np.isfinite(mu) & (mu >= lo) & (mu <= hi)
+    )
 
     sigma_D = 0.05 + 0.25 * sE
     with np.errstate(invalid="ignore", divide="ignore"):
