@@ -137,3 +137,20 @@ def test_drift_disagreeing_with_market_cap_is_caught(panel):
     weak["mu_agreement"] = 0.30
     code, _ = validate(weak, n_expected=1424)
     assert code == 1
+
+
+JOINED = PANEL.parent / "esg_dd_pd_latest.csv"
+
+
+@pytest.mark.skipif(not JOINED.exists(), reason="needs the joined file")
+def test_the_joined_file_still_carries_what_the_gate_checks():
+    """merging.ipynb runs the gate on its own output before writing it.
+
+    A column added to the gate's required set must also be added to that
+    notebook's carry list, or the join silently stops being judged. That
+    regression happened once: hardening the gate made the joined file BLOCK on
+    a missing `assets_usd`.
+    """
+    joined = pd.read_csv(JOINED, low_memory=False)
+    code, report = validate(joined.dropna(subset=["DD_m"]), n_expected=len(joined))
+    assert code == 0, f"the joined file no longer passes its own gate:\n{report}"
