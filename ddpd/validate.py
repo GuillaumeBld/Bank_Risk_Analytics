@@ -87,6 +87,10 @@ def validate(frame: pd.DataFrame, n_expected: int | None = None) -> tuple[int, s
              bands.MEDIAN_SIGMA_V)
     rep.band("median E/F", _median(converged, lambda d: d["E"] / d["F"]),
              bands.MEDIAN_E_OVER_F)
+    if "assets_usd" in converged.columns:
+        rep.band("median F/assets",
+                 _median(converged, lambda d: d["F"] / d["assets_usd"]),
+                 bands.MEDIAN_F_OVER_ASSETS)
 
     rep.lines.append("")
     rep.lines.append("Dependent-variable usability:")

@@ -26,6 +26,12 @@
 > `python -m ddpd.pipeline` and gated by `python -m ddpd.validate`.
 > Regenerate with `.archon/workflows/regenerate-dd-pd.yaml`.
 >
+> **The notebooks are callers, not implementations.** The model lives in
+> `ddpd/`; each notebook explains one part of it, calls it, and checks the
+> result. Run order: `dd_pd_market.ipynb` and `dd_pd_accounting.ipynb` for the
+> two models, then `merging.ipynb` to join onto the ESG panel, then
+> `analysis.ipynb`.
+>
 > The convergence and coverage badges below measure solver health and row
 > counts. Neither can see a mis-specified input, and both stayed green
 > throughout the defect. Read the acceptance gate instead.

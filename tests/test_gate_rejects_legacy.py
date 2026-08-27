@@ -64,3 +64,16 @@ def test_legacy_leverage_is_implausible(legacy):
 def test_legacy_asset_vol_is_equity_like(legacy):
     """sigma_V near sigma_E is the fingerprint of a barrier that hides leverage."""
     assert legacy["asset_vol"].median() > 0.10
+
+
+def test_barrier_share_of_assets_names_the_defect_at_the_input():
+    """The one band that looks at F itself rather than at what F did to DD.
+
+    Every other band catches the v3.0 defect only after it has propagated
+    through the solver. This one fails on the input, which is where a future
+    barrier mistake will be cheapest to catch.
+    """
+    from ddpd.bands import MEDIAN_F_OVER_ASSETS
+
+    assert not MEDIAN_F_OVER_ASSETS.holds(0.060), "v3.0 debt_total/assets must fail"
+    assert MEDIAN_F_OVER_ASSETS.holds(0.891), "real bank liabilities/assets must pass"

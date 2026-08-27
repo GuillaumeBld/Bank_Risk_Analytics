@@ -71,3 +71,34 @@ one per bank. Those are left undefined rather than filled from a peer group.
 `measure_m` / `measure_a` column so downstream code cannot lose track of it.
 
 Closes #26, #27, #28, #29, #30, #31, #32.
+
+## 2026-08-27 — notebooks converted to callers
+
+The four notebooks no longer compute anything. The model lives in `ddpd/`, and
+each notebook now explains one part of it, calls it, and checks the result.
+
+| Notebook | Was | Is |
+|---|---|---|
+| `dd_pd_market.ipynb` | 25 cells, two solver implementations inline | 18 cells: the Merton derivation, one firm solved end to end, panel diagnostics, the gate |
+| `dd_pd_accounting.ipynb` | 21 cells, proxy cascade and imputation chain inline | 14 cells: the Bharath-Shumway proxies, one firm by hand checked against the module, coverage, the gate |
+| `merging.ipynb` | outer-joined two DD/PD datasets, 127 duplicate keys | joins the single panel onto the ESG panel, `validate="1:1"`, gate before writing |
+| `analysis.ipynb` | read the newest `merged_*.csv` by mtime | reads `esg_dd_pd_latest.csv`, a stable name written only after the gate passes |
+
+The market notebook previously defined the solver **twice**, in cells 15 and 18,
+with different bounds, tolerances and convergence criteria; cell 17 ran one and
+cell 18 ran the other. There is now one implementation, in `ddpd/models.py`,
+covered by `tests/test_models.py`.
+
+Each notebook is committed with its outputs from a real execution against the
+committed panel. All four run start to finish with zero errors.
+
+**Also in this change**
+
+- `size_dummy` in `analysis.ipynb` is a median split. It was `total_assets > 1.0`
+  on a column denominated in millions, which selected every bank in the panel, so
+  no size control was applied from that cell onward. Closes #33.
+- A fifth acceptance band, median barrier over total assets, in [0.75, 0.97].
+  It is the only band that inspects the input rather than the output: v3.0's
+  `debt_total` gives 0.060 here and fails immediately, where every other band
+  catches the defect only after it has passed through the solver. Suggested by a
+  downstream consumer of these series.

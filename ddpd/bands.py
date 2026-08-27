@@ -60,6 +60,19 @@ MEDIAN_E_OVER_F = Band(
     "equity is a small fraction of bank liabilities",
 )
 
+#: The barrier as a share of total assets. This is the ONLY band that looks at
+#: the input rather than the output, and it is the one that names the v3.0
+#: defect directly: `debt_total` gave a median of 0.060 here. Added on the
+#: recommendation of a downstream consumer of these series, who pointed out that
+#: every other band catches the defect only after it has propagated through the
+#: solver.
+MEDIAN_F_OVER_ASSETS = Band(
+    0.75, 0.97,
+    "median barrier over total assets",
+    "bank equity is 8-13% of assets, so liabilities are 87-92%; "
+    "a barrier far below that is not the whole liability stack",
+)
+
 #: A dependent variable that is zero to machine precision for nearly every row
 #: carries no cross sectional information. The legacy PD_a was below 1e-10 for
 #: 95% of the sample, which makes every PD regression an estimate on a constant.
