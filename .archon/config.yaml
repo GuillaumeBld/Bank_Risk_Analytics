@@ -1,0 +1,9 @@
+# Repo-scoped Archon configuration.
+assistant: claude
+
+worktree:
+  baseBranch: main
+
+defaults:
+  loadDefaultCommands: true
+  loadDefaultWorkflows: true

@@ -55,3 +55,7 @@ data/logs/
 # Large data files (optional - uncomment if needed)
 # data/outputs/datasheet/*.csv
 # data/outputs/analysis/*.csv
+
+# Archon runtime artifacts
+.archon/state/
+.archon/.env
