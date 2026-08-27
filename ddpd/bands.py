@@ -78,6 +78,29 @@ MEDIAN_F_OVER_ASSETS = Band(
 #: 95% of the sample, which makes every PD regression an estimate on a constant.
 MIN_SHARE_PD_ABOVE_1E6 = 0.10
 
+#: A defect confined to a minority of rows survives every median band above:
+#: an independent review set the barrier to the v3.0 value for 2023 only, and
+#: the gate returned PASS with that year at V/F 2.73 against a panel median of
+#: 1.16. The medians dilute it. So every band that has a median is ALSO applied
+#: per year, with a wider tolerance because a single year is a smaller sample.
+#: 2023 is the year US banks failed, which is the worst place for a defect to
+#: hide.
+PER_YEAR_V_OVER_F = Band(
+    0.98, 1.60,
+    "per-year median asset value over barrier",
+    "one year priced on the wrong barrier passes a panel-wide median",
+)
+PER_YEAR_SIGMA_V = Band(
+    0.002, 0.120,
+    "per-year median asset volatility",
+    "one year priced on the wrong barrier passes a panel-wide median",
+)
+
+#: The correlation between the compounded drift and the year-on-year change in
+#: market cap. The v3.0 defect was an unverified drift; replacing its source
+#: without thresholding the agreement would leave the verification a log line.
+MIN_DRIFT_AGREEMENT = 0.70
+
 #: Below this, the panel is too thin to be worth shipping; the run reports
 #: BLOCKED rather than failing, because thin input is not a defect in the code.
 MIN_COVERAGE = 0.80

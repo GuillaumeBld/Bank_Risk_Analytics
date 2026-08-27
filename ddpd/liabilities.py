@@ -49,6 +49,7 @@ class LiabilityPanel:
     frame: pd.DataFrame
     n_input: int
     n_resolved: int
+    rejected: pd.DataFrame
 
     @property
     def coverage(self) -> float:
@@ -172,6 +173,11 @@ def build_liability_panel(
     df["liab_ratio"] = df["total_liabilities"] / df["assets_usd"]
     lo, hi = PLAUSIBLE_LIAB_RATIO
     keep = df["total_liabilities"].gt(0) & df["liab_ratio"].between(lo, hi)
+    # A silent filter here would remove the distressed tail, which is exactly
+    # what a default-risk panel exists to price. Rejections are returned so the
+    # caller can log them per row rather than infer them from a row count.
+    rejected = df.loc[~keep & df["total_liabilities"].notna(),
+                      ["ticker", "year", "liab_ratio", "liab_method"]].copy()
     resolved = df.loc[keep].copy()
 
     cols = [
@@ -182,6 +188,7 @@ def build_liability_panel(
         frame=resolved[cols].reset_index(drop=True),
         n_input=n_input,
         n_resolved=len(resolved),
+        rejected=rejected.reset_index(drop=True),
     )
 
 

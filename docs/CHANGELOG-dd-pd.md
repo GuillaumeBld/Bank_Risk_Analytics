@@ -168,3 +168,84 @@ diagnostics fell from 15 to 3 against the v4.0 series, and offered the
 explanation that the old degenerate variable had been passing specification
 tests without measuring anything. That is partly true, but checking the tail
 instead of accepting the flattering reading surfaced a drift of -424%.
+
+## 2026-08-27 — gate hardened after an independent cross-family review (v4.2)
+
+**No DD/PD value changes.** Every number in the panel is identical; this changes
+what the gate refuses.
+
+An independent review by DeepSeek, a different model family, was given the
+module and its tests and asked to defeat the gate rather than approve it. It
+did, by construction. The full review is in
+`docs/review/2026-08-27_deepseek_independent_review.md`.
+
+### What it broke, verified against the real code and data before fixing
+
+| | Attack | Old verdict | Now |
+|---|---|---|---|
+| 1 | v3.0 barrier applied to **2023 only** | **PASS** | FAIL |
+| 2 | v3.0 barrier applied to 2021-2023 | **PASS** | FAIL |
+| 3 | run with no `--expected-rows` | **PASS** | BLOCKED |
+| 4 | delete the `assets_usd` column | **PASS** | BLOCKED |
+| 5 | delete the `sigma_E` column | **KeyError** | BLOCKED |
+| 6 | drift never cross-checked | no check | FAIL |
+
+The first is the one that mattered. Every band was a panel median, so a defect
+confined to a minority of rows was diluted by the good rows: with 2023 priced on
+the v3.0 barrier, that year sat at V/F 2.73 while the panel median stayed at
+1.16 and the gate printed "PASS: every band holds". 2023 is the year US banks
+failed, which is the worst place for a defect to hide.
+
+The review also observed that four of the five bands were the same degree of
+freedom, leverage, transformed four ways. That is why the medians diluted so
+easily.
+
+### The fixes
+
+- **Per-year bands.** Median V/F and median sigma_V are now checked for every
+  year as well as for the panel, with a wider tolerance because a year is a
+  smaller sample. The per-year table is printed whether it passes or not.
+- **Coverage is mandatory.** `--expected-rows` is required; without it the run
+  is BLOCKED, not passed.
+- **No check can be deleted by deleting a column.** `assets_usd` and `sigma_E`
+  join the required set, so a missing column is a clean BLOCKED instead of a
+  skipped band or a traceback.
+- **The drift carries its own verification.** The agreement between the
+  compounded drift and the year-on-year change in market cap is now a column on
+  the panel and a thresholded band at 0.70, not a line in the log. The v3.0
+  defect was an unverified drift; moving its source without thresholding the
+  agreement would have left the same hole in a new place.
+- **Year-exact fallback.** The `rit` fallback used `groupby.shift(1)`, a row
+  shift, which is the previous year only when a bank's panel has no gap. It now
+  merges on the year. No row in the current panel was affected; the mechanism
+  was real and latent.
+- **Rejected barriers are named.** The plausibility filter logged only a count.
+  It now logs each rejected bank-year with its ratio and its source, because a
+  silent filter on that band would remove the distressed tail that a
+  default-risk panel exists to price. On this panel it rejects two rows,
+  `HIFS` 2021 and 2022, and both are vendor errors rather than distress.
+- **`_dedupe` no longer crashes** on a duplicated key whose rule column is
+  entirely missing.
+
+### One limit stated rather than papered over
+
+A missing **first or last** year is not caught. Dropping 2023 leaves 81.4%
+coverage and dropping 2016 leaves 87.1%, against a real panel at 91.6%: no floor
+separates them without rejecting the real panel. A missing **interior** year is
+caught by a contiguity check. The per-year table is where a reader sees an edge
+year is absent. `test_a_missing_EDGE_year_is_a_known_limit_not_a_pass_to_be_faked`
+pins this so a future change that tunes the floor to hide it will break.
+
+### Two findings judged real but not live
+
+- The `rit` fallback row-shift affects 0 of the 54 fallback rows in this panel.
+- The solver can report success at its lower bound with a large residual for
+  E/F below about 0.001; this panel stays above 0.02. The pipeline still records
+  `converged` on `fit.success` alone. Left as is and recorded here.
+
+### What the review confirmed
+
+The finance is correct. It hand-checked and numerically round-tripped the Merton
+and Bharath-Shumway implementations: no sign error, no wrong drift, `DD_m` is d2
+and not d1, and the risk-neutral versus physical distinction is carried in the
+output. It also judged the legacy-rejection test real and non-vacuous.
