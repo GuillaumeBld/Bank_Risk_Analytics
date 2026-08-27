@@ -249,3 +249,75 @@ The finance is correct. It hand-checked and numerically round-tripped the Merton
 and Bharath-Shumway implementations: no sign error, no wrong drift, `DD_m` is d2
 and not d1, and the risk-neutral versus physical distinction is carried in the
 output. It also judged the legacy-rejection test real and non-vacuous.
+
+## 2026-08-27 — `rit` rebuilt at source, and a real Fama-French cost of equity (v5.0)
+
+**`DD_m` and `DD_a` are unchanged**, both verified identical. This fixes the root
+cause behind issue #35 instead of routing around it, and replaces the variable
+that inherited it.
+
+### `rit` rebuilt in the source files
+
+The earlier fix rebuilt the drift inside the pipeline and left the broken column
+in place, so every other consumer stayed exposed. `rit` is now rebuilt in
+`Book2_clean.csv`, `esg_0718_clean.csv` and `esg_0718.csv` themselves, from the
+monthly total returns.
+
+| | legacy | rebuilt |
+|---|---|---|
+| minimum | **-4.2356** | -0.7520 |
+| maximum | 2.7760 | 2.5957 |
+| impossible values (below -100%) | 2 | **0** |
+| rows moved by more than 10 points | | **795 of 1,361** |
+| correlation legacy vs rebuilt | | **0.4598** |
+
+Originals are kept as `rit_legacy` and `rit_rf_legacy`; nothing is deleted, so
+anyone comparing old results to new can see exactly what moved. `rit_rf` is
+recomputed as `rit - rf`, and `rit_source` records the provenance per row.
+
+### A cost of equity that is one
+
+`FF_Capital` is consumed by six scripts and computed by none. Regressing it on
+the columns that do exist gives R-squared 0.95 with a dominant `rit_rf` term at
+coefficient 0.73, so it is a shrunk transformation of the excess return. It
+correlates **0.972** with `rit_rf` and only **0.63** with a correctly compounded
+return, which is how it inherited the defect.
+
+It is also not a cost of capital. Its values run from -42% to +44% with a median
+of 3.9%. What shareholders require to hold a going concern cannot be negative.
+
+`ddpd/factors.py` builds the textbook quantity instead:
+
+```
+cost_of_equity = rf_t + b_mkt*E[MKT] + b_smb*E[SMB] + b_hml*E[HML]
+```
+
+- Betas from OLS of the bank's monthly excess return on the three monthly
+  factors, over a 60-month window ending December of t-1. Same no-lookahead rule
+  as `sigma_E`, and at least 36 months or no estimate.
+- Premia are long-run monthly means over 1926-2026, annualised: **MKT 8.34%,
+  SMB 2.00%, HML 4.25%**. Using year t's realised factor return would produce a
+  realised return, which is the error the legacy column embodies.
+- Factors from Ken French's published file, committed as
+  `data/clean/ff_factors_monthly_raw.csv`.
+
+Result on the panel:
+
+| | legacy `FF_Capital` | `ff_cost_of_equity` |
+|---|---|---|
+| median | 3.9% | **12.7%** |
+| p10 to p90 | | 6.1% to 18.0% |
+| negative values | ~25% of rows | **0** |
+
+Betas are economically sensible for banks: market 0.73, HML **+0.89** (banks are
+value stocks), SMB 0.85. The premia are recorded on every row, because they are
+a modelling choice rather than a fact.
+
+### One consequence worth stating
+
+The pipeline's `rit` fallback for the drift is now **inert**. It existed to use
+`rit` where the monthly file had no coverage; since `rit` is now built from that
+same file, a missing month means both are missing. It costs 2 rows of `DD_a`
+(1,286 to 1,284) and removes a path that read from a source documented as
+unreliable. The fallback is kept for a `Book2` sourced elsewhere, and the log
+now counts its uses so zero is visible rather than assumed.
