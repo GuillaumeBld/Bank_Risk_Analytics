@@ -13,6 +13,29 @@
 
 ---
 
+> [!IMPORTANT]
+> **The v3.0 datasheets are superseded.** An audit on 2026-08-26 found the
+> Merton default barrier set to `debt_total`, interest-bearing borrowings only,
+> which is a median 6.9% of a bank's real liabilities: deposits were excluded.
+> DD was inflated and both PD series were degenerate. See
+> [`docs/audit/2026-08-26_dd_pd_audit.md`](docs/audit/2026-08-26_dd_pd_audit.md)
+> and issues #26 to #33.
+>
+> The corrected panel is
+> `data/outputs/datasheet/dd_pd_panel_corrected.csv`, produced by
+> `python -m ddpd.pipeline` and gated by `python -m ddpd.validate`.
+> Regenerate with `.archon/workflows/regenerate-dd-pd.yaml`.
+>
+> **The notebooks are callers, not implementations.** The model lives in
+> `ddpd/`; each notebook explains one part of it, calls it, and checks the
+> result. Run order: `dd_pd_market.ipynb` and `dd_pd_accounting.ipynb` for the
+> two models, then `merging.ipynb` to join onto the ESG panel, then
+> `analysis.ipynb`.
+>
+> The convergence and coverage badges below measure solver health and row
+> counts. Neither can see a mis-specified input, and both stayed green
+> throughout the defect. Read the acceptance gate instead.
+
 ## Research Methodology
 
 ### Validation & Quality Assurance

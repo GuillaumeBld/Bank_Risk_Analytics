@@ -1,0 +1,149 @@
+name: regenerate-dd-pd
+description: >
+  Rebuild the DD/PD panel from cleaned inputs and refuse to ship it unless the
+  economic acceptance gate passes. Written after the v3.0 audit, where 100%
+  solver convergence and 90.6% coverage both stayed green while the default
+  barrier was understated fourteen fold.
+interactive: true
+provider: claude
+model: sonnet
+
+# Every routing node below compares a node's WHOLE output with ==. Archon has no
+# substring operator, and an unparseable condition silently skips the node it
+# guards, which on a cancel node means the guard quietly disappears. So each
+# node that is routed on prints exactly one token and nothing else; the human
+# readable evidence goes to $ARTIFACTS_DIR and to a separate node.
+
+nodes:
+  # ---------------------------------------------------------------------------
+  # Slot 1 of the Goodhart contract: FROZEN VERIFIER.
+  # The gate and its thresholds must not move in the same run that produces the
+  # numbers they judge; if they could, the cheapest way to pass is to widen a
+  # band. This runs first and nothing regenerates until it is resolved.
+  # ---------------------------------------------------------------------------
+  - id: verifier-check
+    bash: |
+      set -uo pipefail
+      mkdir -p "$ARTIFACTS_DIR"
+      git diff "origin/${BASE_BRANCH}" -- ddpd/validate.py ddpd/bands.py \
+        > "$ARTIFACTS_DIR/verifier.diff" 2>/dev/null
+      if [ -s "$ARTIFACTS_DIR/verifier.diff" ]; then echo "MODIFIED"; else echo "CLEAN"; fi
+    timeout: 30000
+
+  - id: escalate-verifier-change
+    depends_on: [verifier-check]
+    when: "$verifier-check.output == 'MODIFIED'"
+    approval:
+      message: |
+        This run changes the acceptance gate or its thresholds. A pass produced
+        under a gate the same run edited is not evidence.
+        Read $ARTIFACTS_DIR/verifier.diff. Approve only if the band change
+        carries a cited reason, and record that reason here.
+      capture_response: true
+
+  # ---------------------------------------------------------------------------
+  # Slot 3: TENSION CHECK. The gate is proven able to FAIL before it is trusted
+  # to pass. tests/test_gate_rejects_legacy.py feeds it the real v3.0 output and
+  # requires a FAIL verdict, so a band widened past the known defect breaks here
+  # and the run stops before anything is regenerated.
+  #
+  # trigger_rule all_done: escalate-verifier-change is skipped on a clean run,
+  # and a skipped dependency would otherwise skip this node too.
+  # ---------------------------------------------------------------------------
+  - id: gate-can-fail
+    depends_on: [verifier-check, escalate-verifier-change]
+    trigger_rule: all_done
+    bash: "uv run --with pandas --with numpy --with scipy --with pytest pytest tests -q"
+    timeout: 300000
+
+  - id: regenerate
+    depends_on: [gate-can-fail]
+    bash: |
+      set -euo pipefail
+      uv run --with pandas --with numpy --with scipy \
+        python -m ddpd.pipeline \
+          --clean-dir data/clean \
+          --reference analysis/2026-08-26_refinitiv_extract/extract_bank_fundamentals.csv \
+          --out "$ARTIFACTS_DIR/dd_pd_panel.csv" \
+          --log "$ARTIFACTS_DIR/build.log"
+    timeout: 900000
+
+  # ---------------------------------------------------------------------------
+  # Slot 2: OBSERVED EVIDENCE. The gate's verbatim stdout is this node's output,
+  # captured by the harness. Nothing downstream reads a model's account of it.
+  # ---------------------------------------------------------------------------
+  - id: acceptance-gate
+    depends_on: [regenerate]
+    bash: |
+      set +e
+      uv run --with pandas --with numpy --with scipy \
+        python -m ddpd.validate "$ARTIFACTS_DIR/dd_pd_panel.csv" --expected-rows 1424 \
+        2>&1 | tee "$ARTIFACTS_DIR/gate_report.txt"
+      echo "${PIPESTATUS[0]}" > "$ARTIFACTS_DIR/gate_status"
+      exit 0
+    timeout: 120000
+
+  # Routed on separately so acceptance-gate stays free to print the full report.
+  - id: verdict
+    depends_on: [acceptance-gate]
+    bash: |
+      case "$(cat "$ARTIFACTS_DIR/gate_status")" in
+        0) echo PASS ;; 1) echo FAIL ;; 2) echo BLOCKED ;; *) echo ERROR ;;
+      esac
+    timeout: 15000
+
+  - id: stop-on-gate-failure
+    depends_on: [verdict]
+    when: "$verdict.output == 'FAIL'"
+    cancel: >
+      Acceptance gate FAILED. The regenerated panel is not economically
+      plausible. Read the failing band in $ARTIFACTS_DIR/gate_report.txt.
+      Do not widen a band to get a pass; that is the defect this gate exists
+      to catch.
+
+  # BLOCKED is a normal outcome, not a failure to work around. Thin input is a
+  # fact about the data, and saying so must cost less than inventing rows.
+  - id: stop-blocked
+    depends_on: [verdict]
+    when: "$verdict.output == 'BLOCKED'"
+    cancel: >
+      BLOCKED: inputs too thin to judge. This is a data availability result,
+      not a code defect. Nothing was shipped.
+
+  - id: stop-on-gate-error
+    depends_on: [verdict]
+    when: "$verdict.output == 'ERROR'"
+    cancel: >
+      The gate did not produce a verdict. Treat as failure, not as a pass.
+
+  - id: changelog
+    depends_on: [verdict]
+    when: "$verdict.output == 'PASS'"
+    prompt: |
+      The regeneration passed the acceptance gate.
+
+      Build log:
+      $regenerate.output
+
+      Gate report:
+      $acceptance-gate.output
+
+      Append a changelog entry to docs/CHANGELOG-dd-pd.md. State the barrier
+      convention, the equity source, the row counts, and the cross-check ratio
+      against reported deposits plus debt. Quote the numbers the gate printed;
+      do not paraphrase its verdict.
+    allowed_tools: [Read, Edit, Write]
+
+  # ---------------------------------------------------------------------------
+  # Slot 4: INDEPENDENT GATE. A human sees the raw gate output and the raw diff,
+  # never a model's account of them, before this replaces the shipped dataset.
+  # ---------------------------------------------------------------------------
+  - id: human-signoff
+    depends_on: [changelog]
+    approval:
+      message: |
+        Raw gate output is above, unedited, in $ARTIFACTS_DIR/gate_report.txt.
+        Confirm before this panel replaces the current dataset. Check that
+        median V/F sits near 1.1 and median sigma_V in the low single digits
+        of a percent; those are the two numbers the v3.0 defect got wrong.
+      capture_response: true

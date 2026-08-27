@@ -1,0 +1,245 @@
+Ticker,Company,Symbol,Listed/delisted (as of today),Reason,new ticker,MM/YY,PermId,ticker,vendor_name,name_ok
+ABCB,Ameris Bancorp,ABCB.N,listed,,,,4295905370.0,ABCB,Ameris Bancorp,True
+ACNB,ACNB Corporation,ACNB.O,listed,,,,4295912388.0,ACNB,ACNB Corp,True
+ALRS,Alerus Financial Corporation,ALRS.O,listed,,,,4296477228.0,ALRS,Alerus Financial Corp,True
+AMTB,Amerant Bancorp Inc.,AMTB.N,listed,,,,5060004761.0,AMTB,Amerant Bancorp Inc.,True
+AROW,Arrow Financial Corporation,AROW.OQ,listed,,,,4295905606.0,AROW,Arrow Financial Corp,True
+ASB,Associated Banc-Corp,ASB.N,listed,,,,4295905618.0,ASB,Associated Banc-Corp,True
+ATLO,Ames National Corporation,ATLO.OQ,listed,,,,4295899243.0,ATLO,Ames National Corp,True
+AUB,Atlantic Union Bankshares Corporation,AUB.N,listed,,,,4295908241.0,AUB,Atlantic Union Bankshares Corporation,True
+AUBN,Auburn National Bancorporation Inc.,AUBN.OQ,listed,,,,4295912576.0,AUBN,Auburn National Bancorporation Inc,True
+BAC,Bank of America Corporation,BAC.N,listed,,,,8589934339.0,BAC,Bank of America Corporation,True
+BANC,Banc of California Inc.,BANC.N,listed,,,,4295902744.0,BANC,"Banc of California, Inc.",True
+BANF,BancFirst Corporation,BANF.OQ,listed,,,,4295905656.0,BANF,BancFirst Corp,True
+BANR,Banner Corporation,BANR.OQ,listed,,,,4295906502.0,BANR,Banner Corp,True
+BCBP,BCB Bancorp Inc.,BCBP.OQ,listed,,,,4295914768.0,BCBP,BCB Bancorp Inc,True
+BCML,BayCom Corp,BCML.OQ,listed,,,,5052541464.0,BCML,BayCom Corp,True
+BFC,Bank First Corporation,BFC.OQ,listed,,,,4295901616.0,BFC,Bank First Corp,True
+BFIN,BankFinancial Corporation,BFIN.OQ,listed,,,,4295899581.0,BFIN,BankFinancial Corp,True
+BFST,Business First Bancshares Inc.,BFST.OQ,listed,,,,5037632710.0,BFST,Business First Bancshares Inc,True
+BHB,Bar Harbor Bankshares,BHB.A,listed,,,,4295903524.0,BHB,Bar Harbor Bankshares,True
+BHLB,Berkshire Hills Bancorp Inc.,BHLIP.PK^B11,delisted,"Merger (with Brookline Bancorp, forming Beacon Financial Corporation)",BBT,2026-09-25,4295901001.0,BHLB,Beacon Financial Corporation,False
+BKU,BankUnited Inc.,BKU.N,listed,,,,5001204503.0,BKU,"BankUnited, Inc.",True
+BLFY,Blue Foundry Bancorp,BLFY.OQ,listed,,,,5080144275.0,BLFY,Blue Foundry Bancorp,True
+BMRC,Bank of Marin Bancorp,BMRC.OQ,listed,,,,5000493569.0,BMRC,Bank of Marin Bancorp,True
+BOH,Bank of Hawaii Corporation,BOH.N,listed,,,,4295904688.0,BOH,Bank of Hawaii Corporation,True
+BOKF,BOK Financial Corporation,BOKF.OQ,listed,,,,4295905668.0,BOKF,BOK Financial Corp,True
+BRBS,Blue Ridge Bankshares Inc.,BRBS.K,listed,,,,4296470980.0,BRBS,Blue Ridge Bankshares Inc,True
+BRKL,Brookline Bancorp Inc.,BRKL.O^I25,delisted,"Merger (with Berkshire Hills Bancorp, forming Beacon Financial Corporation)",BBT,2026-09-25,4295905778.0,BRKL,Brookline Bancorp Inc,True
+BSRR,Sierra Bancorp,BSRR.OQ,listed,,,,4295912617.0,BSRR,Sierra Bancorp,True
+BUSE,First Busey Corporation,BUSE.OQ,listed,,,,4295913427.0,BUSE,First Busey Corporation,True
+BWB,Bridgewater Bancshares Inc.,BWB.OQ,listed,,,,5000068349.0,BWB,Bridgewater Bancshares Inc,True
+BWFG,Bankwell Financial Group Inc.,BWFG.O,listed,,,,5000047157.0,BWFG,Bankwell Financial Group Inc,True
+BY,Byline Bancorp Inc.,BY,listed,,,,5056414981.0,BY,Byline Bancorp Inc,True
+CAC,Camden National Corporation,CAC.OQ,listed,,,,4295903633.0,CAC,Camden National Corp,True
+CADE,Cadence Bank,CADE.N,listed,,,,5000644899.0,CADE,Cadence Bank (Mississippi),True
+CATY,Cathay General Bancorp,CATY.OQ,listed,,,,4295905885.0,CATY,Cathay General Bancorp,True
+CBAN,Colony Bankcorp Inc.,CBAN.N,listed,,,,4295905983.0,CBAN,Colony Bankcorp Inc,True
+CBFV,CB Financial Services Inc.,CBFV.O,listed,,,,4296474204.0,CBFV,CB Financial Services Inc,True
+CBNK,Capital Bancorp Inc.,CBNK.OQ,listed,,,,5035926930.0,CBNK,Capital Bancorp Inc,True
+CBSH,Commerce Bancshares Inc.,CBSH.OQ,listed,,,,4295905997.0,CBSH,"Commerce Bancshares, Inc.",True
+CBU,Community Bank System Inc.,CBU.N,listed,,,,4295903752.0,CBU,Community Financial System Inc,True
+CCB,Coastal Financial Corporation,CCB.OQ,listed,,,,4295912910.0,CCB,Coastal Financial Corp (EVERETT),True
+CCBG,Capital City Bank Group Inc.,CCBG.OQ,listed,,,,5000001087.0,CCBG,Capital City Bank Group Inc,True
+CCNE,CNB Financial Corporation,CCNE.OQ,listed,,,,4295905814.0,CCNE,CNB Financial Corp,True
+CFFI,C&F Financial Corporation,CFFI.OQ,listed,,,,4295905795.0,CFFI,C&F Financial Corp,True
+CFG,Citizens Financial Group Inc.,CFG.N,listed,,,,4296419629.0,CFG,Citizens Financial Group Inc,True
+CFR,Cullen/Frost Bankers Inc.,CFR.N,listed,,,,4295903828.0,CFR,Cullen/Frost Bankers Inc,True
+CHCO,City Holding Company,CHCO.OQ,listed,,,,4295905959.0,CHCO,City Holding Co,True
+CHMG,Chemung Financial Corporation,CHMG.O,listed,,,,4295912842.0,CHMG,Chemung Financial Corp,True
+CIVB,Civista Bancshares Inc.,CIVB.OQ,listed,,,,4295913429.0,CIVB,Civista Bancshares Inc,True
+CIZN,Citizens Holding Company,CIZnv.OQ^J24,delisted,Voluntary delisting; moved to OTCQX Best Market,CIZN (OTCQX),2026-12-23,,CIZN,VictoryShares Developed Enhanced Vol Wtd ETF,False
+CLBK,Columbia Financial Inc.,CLBK.O,listed,,,,5000055148.0,CLBK,Columbia Financial Inc,True
+CMA,Comerica Incorporated,CMA.N,listed,,,,4295903746.0,CMA,Comerica Inc,True
+CNOB,ConnectOne Bancorp Inc.,CNOB.OQ,listed,,,,4295905903.0,CNOB,"ConnectOne Bancorp, Inc.",True
+COFS,ChoiceOne Financial Services Inc.,COFS.OQ,listed,,,,4295912858.0,COFS,ChoiceOne Financial Services Inc,True
+COLB,Columbia Banking System Inc.,COLB.OQ,listed,,,,4295905988.0,COLB,Columbia Banking System Inc,True
+CPF,Central Pacific Financial Corp.,CPF.N,listed,,,,4295905812.0,CPF,Central Pacific Financial Corp,True
+CTBI,Community Trust Bancorp Inc.,CTBI.OQ,listed,,,,4295906014.0,CTBI,"Community Trust Bancorp, Inc.",True
+CUBI,Customers Bancorp Inc.,CUBI.N,listed,,,,5036875088.0,CUBI,"Customers Bancorp, Inc.",True
+CVBF,CVB Financial Corp.,CVBF.OQ,listed,,,,4295903634.0,CVBF,CVB Financial Corp,True
+CWBC,Community West Bancshares,CWBC.OQ,listed,,,,4295901703.0,CWBC,Community West Bancshares,True
+CZNC,Citizens & Northern Corporation,CZNC.OQ,listed,,,,4295912875.0,CZNC,Citizens & Northern Corp,True
+DCOM,Dime Community Bancshares Inc.,DCOM.OQ,listed,,,,4295912707.0,DCOM,"Dime Community Bancshares, Inc.",True
+DFS,Discover Financial Services,DFS.N^E25,delisted,Acquired by Capital One Financial Corp,COF,2026-05-25,4295902718.0,DFS,Discover Financial Services,True
+EBC,Eastern Bankshares Inc.,EBC.OQ,listed,,,,5074807294.0,EBC,Eastern Bankshares Inc,True
+EBMT,Eagle Bancorp Montana Inc.,EBMT.OQ,listed,,,,4296361001.0,EBMT,Eagle Bancorp Montana Inc,True
+EBTC,Enterprise Bancorp Inc.,EBTC.OQ^G25,delisted,Merger (acquired by Independent Bank Corp/INDB),INDB,2026-07-25,4295909764.0,EBTC,Enterprise Bancorp Inc,True
+EFSC,Enterprise Financial Services Corp.,EFSC.OQ,listed,,,,4295900155.0,EFSC,Enterprise Financial Services Corp,True
+EGBN,Eagle Bancorp Inc.,EGBN.OQ,listed,,,,4295913221.0,EGBN,"Eagle Bancorp, Inc.",True
+EQBK,Equity Bancshares Inc.,EQBK.N,listed,,,,4296939326.0,EQBK,Equity Bancshares Inc,True
+ESQ,Esquire Financial Holdings Inc.,ESQ.OQ,listed,,,,5037639962.0,ESQ,Esquire Financial Holdings Inc,True
+EVBN,Evans Bancorp Inc.,EVBN.K^E25,delisted,Merger with NBT Bancorp Inc. ,NBTB,2026-05-25,4295913344.0,EVBN,Evans Bancorp Inc,True
+EWBC,East West Bancorp Inc.,EWBC.OQ,listed,,,,4295913225.0,EWBC,"East West Bancorp, Inc.",True
+EXSR,Exchange Bank,EXSR.PK,listed,,,,4296477140.0,EXSR,Exchange Bank,True
+FBIZ,First Business Financial Services Inc.,FBIZ.OQ,listed,,,,4295899786.0,FBIZ,First Business Financial Services Inc,True
+FBK,FB Financial Corporation,FBK.N,listed,,,,5001152912.0,FBK,FB Financial Corporation,True
+FBNC,First Bancorp,FBNC.OQ,listed,,,,5000073589.0,FBNC,First Bancorp (North Carolina),True
+FCBC,First Community Bankshares Inc.,FCBC.OQ,listed,,,,5066566920.0,FCBC,First Community Bankshares Inc,True
+FCCO,First Community Corporation,FCCO.OQ,listed,,,,4295913428.0,FCCO,First Community Corp (South Carolina),True
+FCF,First Commonwealth Financial Corporation,FCF.N,listed,,,,4295903989.0,FCF,First Commonwealth Financial Corp,True
+FCNCA,First Citizens BancShares Inc. Class A,FCNCA.OQ,listed,,,,5001113817.0,FCNCA,"First Citizens BancShares, Inc. (Delaware)",True
+FDBC,Fidelity D & D Bancorp Inc.,FDBC.O,listed,,,,4295904255.0,FDBC,Fidelity D&D Bancorp Inc,True
+FFBC,First Financial Bancorp,FFBC.OQ,listed,,,,4295906468.0,FFBC,First Financial Bancorp.,True
+FFIC,Flushing Financial Corporation,FFIC.OQ,listed,,,,4295906520.0,FFIC,Flushing Financial Corp,True
+FFIN,First Financial Bankshares Inc.,FFIN.OQ,listed,,,,4295906470.0,FFIN,First Financial Bankshares Inc,True
+FFWM,First Foundation Inc.,FFWM.N,listed,,,,5064590429.0,FFWM,First Foundation Inc,True
+FGBI,First Guaranty Bancshares Inc.,FGBI.O,listed,,,,5000058627.0,FGBI,First Guaranty Bancshares Inc,True
+FHB,First Hawaiian Inc.,FHB.OQ,listed,,,,5000886611.0,FHB,"First Hawaiian, Inc.",True
+FHN,First Horizon Corporation,FHN.N,listed,,,,4295903994.0,FHN,First Horizon Corporation,True
+FISI,Financial Institutions Inc.,FISI.OQ,listed,,,,4295913393.0,FISI,Financial Institutions Inc,True
+FITB,Fifth Third Bancorp,FITB.OQ,listed,,,,4295906442.0,FITB,Fifth Third Bancorp,True
+FLG,Flagstar Financial Inc.,FLG.N,listed,,,,4295907709.0,FLG,Flagstar Bank NA,True
+FLIC,The First of Long Island Corporation,FLIC.OQ^F25,delisted,Merger with ConnectOne Bancorp,CNOB,2026-06-25,4295913455.0,FLIC,First of Long Island Corp,True
+FMAO,Farmers & Merchants Bancorp Inc.,FMAO.OQ,listed,,,,4296137737.0,FMAO,Farmers & Merchants Bancorp Inc,True
+FMBH,First Mid Bancshares Inc.,FMBH.O,listed,,,,4295913441.0,FMBH,First Mid Bancshares Inc,True
+FMNB,Farmers National Banc Corp.,FMNB.OQ,listed,,,,5000049661.0,FMNB,Farmers National Banc Corp,True
+FNB,F.N.B. Corporation,FNB.N,listed,,,,5052166213.0,FNB,FNB Corp,False
+FNLC,The First Bancorp Inc.,FNLC.OQ,listed,,,,4295913451.0,FNLC,First Bancorp Inc,True
+FNWB,First Northwest Bancorp,FNWB.OQ,listed,,,,4296413309.0,FNWB,First Northwest Bancorp,True
+FRAF,Franklin Financial Services Corporation,FRAF.OQ,listed,,,,4295913513.0,FRAF,Franklin Financial Services Corp,True
+FRBA,First Bank,FRBA.OQ,listed,,,,5000659922.0,FRBA,FIRST BANK (Hamilton),True
+FRBKQ,Republic First Bancorp Inc.,FRBKQ.PK,listed,,,,4295907772.0,FRBKQ,Republic First Bancorp Inc,True
+FRCB,First Republic Bank,FRCB.PK,listed,,,,5001218533.0,FRCB,First Republic Bank,True
+FRME,First Merchants Corporation,FRME.OQ,listed,,,,4295906482.0,FRME,First Merchants Corporation,True
+FRST,Primis Financial Corp.,FRST.OQ,listed,,,,4295902419.0,FRST,Primis Financial Corp,True
+FSBC,Five Star Bancorp,FSBC.OQ,listed,,,,4296127909.0,FSBC,Five Star Bancorp,True
+FSBW,FS Bancorp Inc.,FSBW.OQ,listed,,,,5035949334.0,FSBW,FS Bancorp Inc,True
+FULT,Fulton Financial Corporation,FULT.OQ,listed,,,,4295906550.0,FULT,Fulton Financial Corporation,True
+FUNC,First United Corporation,FUNC.OQ,listed,,,,4295906499.0,FUNC,First United Corp,True
+FVCB,FVCBankcorp Inc.,FVCB.O,listed,,,,5057825057.0,FVCB,FVCBankcorp Inc,True
+GABC,German American Bancorp Inc.,GABC.OQ,listed,,,,4295906587.0,GABC,German American Bancorp Inc,True
+GBCI,Glacier Bancorp Inc.,GBCI.N,listed,,,,4295906598.0,GBCI,Glacier Bancorp Inc,True
+GNTY,Guaranty Bancshares Inc.,GNTY.K^J25,delisted,Merger with BOK Financial Corporation,BOKF,2026-09-25,4295913612.0,GNTY,Guaranty Bancshares Inc,True
+GSBC,Great Southern Bancorp Inc.,GSBC.OQ,listed,,,,4295906616.0,GSBC,Great Southern Bancorp Inc,True
+HAFC,Hanmi Financial Corporation,HAFC.OQ,listed,,,,4295900253.0,HAFC,Hanmi Financial Corp,True
+HBAN,Huntington Bancshares Incorporated,HBAN.OQ,listed,,,,4295906733.0,HBAN,Huntington Bancshares Inc,True
+HBCP,Home Bancorp Inc.,HBCP.OQ,listed,,,,4298054621.0,HBCP,Home Bancorp Inc,True
+HBNC,Horizon Bancorp Inc.,HBNC.OQ,listed,,,,4295913698.0,HBNC,Horizon Bancorp Inc,True
+HBT,HBT Financial Inc.,HBT.OQ,listed,,,,5000060908.0,HBT,HBT Financial Inc,True
+HFWA,Heritage Financial Corporation,HFWA.OQ,listed,,,,4295906698.0,HFWA,Heritage Financial Corp,True
+HIFS,Hingham Institution for Savings,HIFS.OQ,listed,,,,4295906706.0,HIFS,Hingham Institution For Savings,True
+HOMB,Home BancShares Inc.,HOMB.N,listed,,,,,HOMB,Home BancShares Inc,True
+HONE,HarborOne Bancorp Inc.,HONE.OQ,listed,,,,4295913053.0,HONE,HarborOne Bancorp Inc,True
+HOPE,Hope Bancorp Inc.,HOPE.OQ,listed,,,,5068328098.0,HOPE,Hope Bancorp Inc,True
+HTBK,Heritage Commerce Corp.,HTBK.OQ,listed,,,,4295907249.0,HTBK,Heritage Commerce Corp,True
+HTH,Hilltop Holdings Inc.,HTH.N,listed,,,,4295906692.0,HTH,Hilltop Holdings Inc.,True
+HWBK,Hawthorn Bancshares Inc.,HWBK.OQ,listed,,,,4295899345.0,HWBK,Hawthorn Bancshares Inc,True
+HWC,Hancock Whitney Corporation,HWC.OQ,listed,,,,4295913352.0,HWC,Hancock Whitney Corporation,True
+IBCP,Independent Bank Corporation,IBCP.OQ,listed,,,,4295906637.0,IBCP,Independent Bank Corp,True
+IBOC,International Bancshares Corporation,IBOC.OQ,listed,,,,4295906784.0,IBOC,International Bancshares Corp,True
+INBK,First Internet Bancorp,INBK.O,listed,,,,4295906850.0,INBK,First Internet Bancorp,True
+INDB,Independent Bank Corp.,INDB.OQ,listed,,,,4297197492.0,INDB,Independent Bank Corp (Massachusetts),True
+ISTR,Investar Holding Corporation,ISTR.OQ,listed,,,,4295906791.0,ISTR,Investar Holding Corp,True
+JMSB,John Marshall Bancorp Inc.,JMSB.O,listed,,,,5042387222.0,JMSB,John Marshall Bancorp Inc,True
+JPM,JPMorgan Chase & Co.,JPM.N,listed,,,,5054811319.0,JPM,JPMorgan Chase & Co,True
+KEY,KeyCorp,KEY.N,listed,,,,5000021791.0,KEY,KeyCorp,True
+LARK,Landmark Bancorp Inc.,LARK.OQ,listed,,,,4295904371.0,LARK,Landmark Bancorp Inc,True
+LCNB,LCNB Corp.,LCNB.OQ,listed,,,,4295906968.0,LCNB,LCNB Corp,True
+LKFN,Lakeland Financial Corporation,LKFN.OQ,listed,,,,4295915909.0,LKFN,Lakeland Financial Corp,True
+LOB,Live Oak Bancshares Inc.,LOB.N,listed,,,,4295906957.0,LOB,"Live Oak Bancshares, Inc.",True
+MBCN,Middlefield Banc Corp.,MBCN.O,listed,,,,5000348762.0,MBCN,Middlefield Banc Corp,True
+MBIN,Merchants Bancorp,MBIN.OQ,listed,,,,4295907297.0,MBIN,Merchants Bancorp,True
+MBWM,Mercantile Bank Corporation,MBWM.OQ,listed,,,,5034173692.0,MBWM,Mercantile Bank Corp,True
+MCB,Metropolitan Bank Holding Corp.,MCB.N,listed,,,,4295914180.0,MCB,Metropolitan Bank Holding Corp,True
+MCBS,MetroCity Bankshares Inc.,MCBS.O,listed,,,,5000583953.0,MCBS,Metrocity Bankshares Inc,True
+HMST,HomeStreet,MCHB.O,delisted,Merger with Mechanics Bancorp,MCHB,,5050706416.0,HMST,Mechanics Bancorp,False
+MFIN,Medallion Financial Corp.,MFIN.OQ,listed,,,,4295901232.0,MFIN,Medallion Financial Corp,True
+MNSB,MainStreet Bancshares Inc.,MNSB.O,listed,,,,5051397876.0,MNSB,"MainStreet Bancshares, Inc.",True
+MOFG,MidWestOne Financial Group Inc.,MOFG.OQ,listed,,,,5000059168.0,MOFG,Midwestone Financial Group Inc (IOWA),True
+MPB,Mid Penn Bancorp Inc.,MPB.OQ,listed,,,,4295904532.0,MPB,Mid Penn Bancorp Inc,True
+MSBI,Midland States Bancorp Inc.,MSBI.OQ,listed,,,,5037270050.0,MSBI,Midland States Bancorp Inc,True
+MTB,M&T Bank Corporation,MTB.N,listed,,,,4295904442.0,MTB,M&T Bank Corporation,True
+MVBF,MVB Financial Corp.,MVBF.O,listed,,,,4295913898.0,MVBF,MVB Financial Corp,True
+MYFW,First Western Financial Inc.,MYFW.OQ,listed,,,,4298026825.0,MYFW,First Western Financial Inc,True
+NBHC,National Bank Holdings Corporation,NBHC.N,listed,,,,5000491595.0,NBHC,National Bank Holdings Corp,True
+NBTB,NBT Bancorp Inc.,NBTB.OQ,listed,,,,4295907237.0,NBTB,NBT Bancorp Inc.,True
+NFBK,Northfield Bancorp Inc.,NFBK.OQ,listed,,,,4295902161.0,NFBK,Northfield Bancorp Inc,True
+NIC,Nicolet Bankshares Inc.,NIC,listed,,,,4296938763.0,NIC,Nicolet Bankshares Inc,True
+NKSH,National Bankshares Inc.,NKSH.OQ,listed,,,,4295914270.0,NKSH,National Bankshares Inc,True
+NRIM,Northrim BanCorp Inc.,NRIM.OQ,listed,,,,4295907418.0,NRIM,Northrim BanCorp Inc,True
+NWBI,Northwest Bancshares Inc.,NWBI.OQ,listed,,,,5000473957.0,NWBI,Northwest Bancshares Inc,True
+NWFL,Norwood Financial Corp.,NWFL.OQ,listed,,,,4295907425.0,NWFL,Norwood Financial Corp,True
+OBK,Origin Bancorp Inc.,OBK.N,listed,,,,4298358908.0,OBK,Origin Bancorp Inc,True
+OCFC,OceanFirst Financial Corp.,OCFC.OQ,listed,,,,4295914414.0,OCFC,OceanFirst Financial Corp,True
+ONB,Old National Bancorp,ONB.OQ,listed,,,,4295907462.0,ONB,Old National Bancorp,True
+OPBK,OP Bancorp,OPBK.O,listed,,,,5054287589.0,OPBK,OP Bancorp,True
+OPOF,Old Point Financial Corporation,OPOF.O^I25,delisted,Merger with TowneBank,TOWN,,4295914420.0,OPOF,Old Point Financial Corp,True
+ORRF,Orrstown Financial Services Inc.,ORRF.OQ,listed,,,,4295914485.0,ORRF,Orrstown Financial Services Inc,True
+OSBC,Old Second Bancorp Inc.,OSBC.OQ,listed,,,,4295907463.0,OSBC,"Old Second Bancorp, Inc",True
+OVBC,Ohio Valley Banc Corp.,OVBC.OQ,listed,,,,4295907458.0,OVBC,Ohio Valley Banc Corp,True
+OVLY,Oak Valley Bancorp,OVLY.OQ,listed,,,,4296489057.0,OVLY,Oak Valley Bancorp,True
+OZK,Bank OZK,OZK.OQ,listed,,,,4296474683.0,OZK,Bank Ozk,True
+PB,Prosperity Bancshares Inc.,PB.N,listed,,,,4295914627.0,PB,"Prosperity Bancshares, Inc.",True
+PCB,PCB Bancorp,PCB.O,listed,,,,4297016417.0,PCB,PCB Bancorp,True
+PDLB,Ponce Financial Group Inc.,PDLB.OQ,listed,,,,5055465104.0,PDLB,Ponce Financial Group Inc,True
+PEBK,Peoples Bancorp of North Carolina Inc.,PEBK.OQ,listed,,,,4295914524.0,PEBK,Peoples Bancorp of North Carolina Inc,True
+PEBO,Peoples Bancorp Inc.,PEBO.OQ,listed,,,,4295907579.0,PEBO,Peoples Bancorp Inc,True
+PFBC,Preferred Bank,PFBC.OQ,listed,,,,4295913040.0,PFBC,Preferred Bank,True
+PFIS,Peoples Financial Services Corp.,PFIS.OQ,listed,,,,4295901511.0,PFIS,Peoples Financial Services Corp,True
+PFS,Provident Financial Services Inc.,PFS.N,listed,,,,4295916183.0,PFS,Provident Financial Services Inc,True
+PGC,Peapack-Gladstone Financial Corporation,PGC.OQ,listed,,,,4295914515.0,PGC,Peapack-Gladstone Financial Corp,True
+PKBK,Parke Bancorp Inc.,PKBK.OQ,listed,,,,4295899331.0,PKBK,Parke Bancorp Inc,True
+PLBC,Plumas Bancorp,PLBC.OQ,listed,,,,4295914780.0,PLBC,Plumas Bancorp,True
+PNC,The PNC Financial Services Group Inc.,PNC.N,listed,,,,4295904676.0,PNC,"The PNC Financial Services Group, Inc.",True
+PNFP,Pinnacle Financial Partners Inc.,PNFP.OQ,listed,,,,4295902630.0,PNFP,"Pinnacle Financial Partners, Inc.",True
+PPBI,Pacific Premier Bancorp Inc.,PPBI.O^I25,listed,,,,4295906999.0,PPBI,Pacific Premier Bancorp Inc,True
+PRK,Park National Corporation,PRK.A,listed,,,,4295904677.0,PRK,Park National Corp,True
+PVBC,Provident Bancorp Inc.,PVBC.OQ,listed,,,,5072813937.0,PVBC,Provident Bancorp Inc (Maryland),True
+PWOD,Penns Woods Bancorp Inc.,PWOD.O^G25,listed,,,,4295914533.0,PWOD,Penns Woods Bancorp Inc,True
+QCRH,QCR Holdings Inc.,QCRH.OQ,listed,,,,4295914654.0,QCRH,QCR Holdings Inc,True
+RBB,RBB Bancorp,RBB.OQ,listed,,,,5000841635.0,RBB,RBB Bancorp,True
+RBCAA,Republic Bancorp Inc. Class A,RBCAA.OQ,listed,,,,4295908669.0,RBCAA,Republic Bancorp Inc,True
+RF,Regions Financial Corporation,RF.N,listed,,,,4295907751.0,RF,Regions Financial Corporation,True
+RMBI,Richmond Mutual Bancorporation Inc.,RMBI.OQ,listed,,,,5068328344.0,RMBI,Richmond Mutual Bancorporation Inc,True
+RNST,Renasant Corporation,RNST.N,listed,,,,4295904715.0,RNST,Renasant Corp,True
+RRBI,Red River Bancshares Inc.,RRBI.O,listed,,,,4296117161.0,RRBI,Red River Bancshares Inc,True
+SBCF,Seacoast Banking Corporation of Florida,SBCF.OQ,listed,,,,4295908668.0,SBCF,Seacoast Banking Corporation of Florida,True
+SBFG,SB Financial Group Inc.,SBFG.OQ,listed,,,,4295914835.0,SBFG,SB Financial Group Inc,True
+SBNY,Signature Bank,SBNY.PK,listed,,,,5000037516.0,SBNY,Signature Bank,True
+SBSI,Southside Bancshares Inc.,SBSI.N,listed,,,,4295907966.0,SBSI,Southside Bancshares Inc,True
+SFBS,ServisFirst Bancshares Inc.,SFBS.N,listed,,,,4297899310.0,SFBS,ServisFirst Bancshares Inc,True
+SFNC,Simmons First National Corporation,SFNC.OQ,listed,,,,4295908679.0,SFNC,Simmons First National Corporation,True
+SFST,Southern First Bancshares Inc.,SFST.OQ,listed,,,,4295913603.0,SFST,Southern First Bancshares Inc,True
+SHBI,Shore Bancshares Inc.,SHBI.OQ,listed,,,,4295914919.0,SHBI,Shore Bancshares Inc,True
+SMBK,SmartFinancial Inc.,SMBK.K,listed,,,,4295899181.0,SMBK,SmartFinancial Inc,True
+SNV,Synovus Financial Corp.,SNV.N,listed,,,,4295905022.0,SNV,Synovus Financial Corp,True
+SPFI,South Plains Financial Inc.,SPFI.OQ,listed,,,,4298464783.0,SPFI,South Plains Financial Inc,True
+SRCE,1st Source Corporation,SRCE.OQ,listed,,,,4295912337.0,SRCE,1st Source Corp,True
+SSB,SouthState Corporation,SSB.N,listed,,,,5096749943.0,SSB,SouthState Bank Corp,True
+STBA,S&T Bancorp Inc.,STBA.OQ,listed,,,,4295907825.0,STBA,S&T Bancorp Inc,True
+STEL,Stellar Bancorp Inc.,STEL.K,listed,,,,5000167337.0,STEL,Stellar Bancorp Inc,True
+SYBT,Stock Yards Bancorp Inc.,SYBT.OQ,listed,,,,4295904866.0,SYBT,Stock Yards Bancorp Inc,True
+TBBK,The Bancorp Inc.,TBBK.OQ,listed,,,,4295913876.0,TBBK,Bancorp Inc,False
+TCBI,Texas Capital Bancshares Inc.,TCBI.OQ,listed,,,,4295915665.0,TCBI,"Texas Capital Bancshares, Inc.",True
+TCBK,TriCo Bancshares,TCBK.OQ,listed,,,,4295908187.0,TCBK,Trico Bancshares,True
+TFC,Truist Financial Corporation,TFC.N,listed,,,,4295903505.0,TFC,Truist Financial Corporation,True
+TFIN,Triumph Financial Inc.,TFIN.N,listed,,,,5037629064.0,TFIN,"Triumph Financial, Inc.",True
+THFF,First Financial Corporation,THFF.OQ,listed,,,,4295906474.0,THFF,First Financial Corp,True
+TMP,Tompkins Financial Corporation,TMP.A,listed,,,,4295905101.0,TMP,Tompkins Financial Corp,True
+TOWN,TowneBank,TOWN.OQ,listed,,,,4295915684.0,TOWN,TowneBank,True
+TRMK,Trustmark Corporation,TRMK.OQ,listed,,,,4295908202.0,TRMK,Trustmark Corporation,True
+TRST,TrustCo Bank Corp NY,TRST.OQ,listed,,,,4295908200.0,TRST,TrustCo Bank Corp NY,True
+UBFO,United Security Bancshares,UBFO.OQ,listed,,,,4295899752.0,UBFO,United Security Bancshares,True
+UBSI,United Bankshares Inc.,UBSI.OQ,listed,,,,4295908248.0,UBSI,"United Bankshares, Inc.",True
+UCB,United Community Banks Inc.,UCB.N,listed,,,,5000042416.0,UCB,United Community Banks Inc,True
+UMBF,UMB Financial Corporation,UMBF.OQ,listed,,,,4295908213.0,UMBF,UMB Financial Corp,True
+UNB,Union Bankshares Inc.,UNB.OQ,listed,,,,4295900988.0,UNB,Union Bankshares Inc,True
+UNTY,Unity Bancorp Inc.,UNTY.OQ,listed,,,,4295908265.0,UNTY,Unity Bancorp Inc,True
+USB,U.S. Bancorp,USB.N,listed,,,,8589934183.0,USB,U.S. Bancorp,True
+UVSP,Univest Financial Corporation,UVSP.OQ,listed,,,,4295915272.0,UVSP,Univest Financial Corp,True
+VABK,Virginia National Bankshares Corporation,VABK.OQ,listed,,,,5039582435.0,VABK,Virginia National Bankshares Corp,True
+VBTX,Veritex Holdings Inc.,VBTX.O,listed,,,,5000712227.0,VBTX,Veritex Holdings Inc,True
+VLY,Valley National Bancorp,VLY.OQ,listed,,,,4295905201.0,VLY,Valley National Bancorp,True
+WABC,Westamerica Bancorporation,WABC.OQ,listed,,,,4295908463.0,WABC,Westamerica Bancorp,True
+WAL,Western Alliance Bancorporation,WAL.N,listed,,,,4295899985.0,WAL,Western Alliance Bancorp,True
+WASH,Washington Trust Bancorp Inc.,WASH.OQ,listed,,,,4295908441.0,WASH,Washington Trust Bancorp Inc,True
+WBS,Webster Financial Corporation,WBS.N,listed,,,,4295908449.0,WBS,Webster Financial Corporation,True
+WFC,Wells Fargo & Company,WFC.N,listed,,,,8589934175.0,WFC,Wells Fargo & Co,True
+WNEB,Western New England Bancorp Inc.,WNEB.OQ,listed,,,,4295901899.0,WNEB,Western New England Bancorp Inc,True
+WSBC,WesBanco Inc.,WSBC.OQ,listed,,,,4295908454.0,WSBC,"Wesbanco, Inc.",True
+WSBF,Waterstone Financial Inc.,WSBF.OQ,listed,,,,5041078674.0,WSBF,Waterstone Financial Inc,True
+WSFS,WSFS Financial Corporation,WSFS.OQ,listed,,,,4295908349.0,WSFS,WSFS Financial Corporation,True
+WTBA,West Bancorporation Inc.,WTBA.OQ,listed,,,,4295902150.0,WTBA,West Bancorporation Inc,True
+WTFC,Wintrust Financial Corporation,WTFC.OQ,listed,,,,4295908493.0,WTFC,Wintrust Financial Corp,True
+ZION,Zions Bancorporation N.A.,ZION.OQ,listed,,,,4295999515.0,ZION,"Zions Bancorporation, National Association",True

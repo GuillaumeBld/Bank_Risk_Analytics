@@ -55,3 +55,10 @@ data/logs/
 # Large data files (optional - uncomment if needed)
 # data/outputs/datasheet/*.csv
 # data/outputs/analysis/*.csv
+
+# Archon runtime artifacts
+.archon/state/
+.archon/.env
+
+# Timestamped run artifacts; esg_dd_pd_latest.csv is the tracked analysis input
+data/outputs/datasheet/esg_dd_pd_2*.csv
