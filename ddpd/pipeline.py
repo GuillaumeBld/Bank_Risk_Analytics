@@ -63,6 +63,10 @@ def _dedupe(frame: pd.DataFrame, keys: list[str], rule_col: str, label: str,
     if not dupes.empty:
         for key, group in dupes.groupby(keys):
             values = sorted(group[rule_col].dropna().tolist(), reverse=True)
+            if not values:
+                log.append(f"{label} {key}: duplicate rows with no {rule_col} to "
+                           f"rank on; keeping the first and flagging it")
+                continue
             log.append(f"{label} {key}: kept {rule_col}={values[0]!r}, dropped {values[1:]!r}")
     ordered = frame.sort_values(keys + [rule_col], ascending=[True] * len(keys) + [False])
     return ordered.drop_duplicates(subset=keys, keep="first").reset_index(drop=True)
@@ -103,6 +107,12 @@ def build(inputs: Inputs) -> tuple[pd.DataFrame, list[str]]:
                f"({liab.coverage:.1%})")
     for method, count in liab.frame["liab_method"].value_counts().items():
         log.append(f"  barrier source {method}: {count} rows")
+    for _, bad in liab.rejected.iterrows():
+        log.append(
+            f"  barrier REJECTED {bad['ticker']} {int(bad['year'])}: "
+            f"liabilities/assets {bad['liab_ratio']:.4f} outside the plausible "
+            f"band; source was {bad['liab_method'] or 'none'}"
+        )
 
     if not raw["reference"].empty:
         debt = acct[["ticker", "year"]].copy()
@@ -161,6 +171,10 @@ def build(inputs: Inputs) -> tuple[pd.DataFrame, list[str]]:
     if inputs.monthly_returns and inputs.monthly_returns.exists():
         annual = annual_returns_from_monthly(inputs.monthly_returns)
         agree = agreement_with_market_cap(annual, raw["market_cap"])
+        drift_agreement = (
+            float(agree["annual_return"].corr(agree["market_cap_return"]))
+            if not agree.empty else float("nan")
+        )
         if not agree.empty:
             log.append(
                 "drift source: monthly total returns, agreement with the "
@@ -173,20 +187,30 @@ def build(inputs: Inputs) -> tuple[pd.DataFrame, list[str]]:
                             validate="1:1")
         panel["mu_from"] = np.where(panel["mu_hat"].notna(), "monthly_compounded", "")
     else:
+        drift_agreement = float("nan")
         panel["mu_hat"] = np.nan
         panel["mu_from"] = ""
 
     # `rit` is retained only as a last resort, and only where it is plausible,
     # so a bank absent from the monthly file is not silently dropped.
-    fallback_rit = panel.groupby("ticker")["rit"].shift(1)
-    gap = panel["mu_hat"].isna() & fallback_rit.between(*PLAUSIBLE_DRIFT)
-    panel.loc[gap, "mu_hat"] = fallback_rit[gap]
+    # Year-exact, not a row shift. `groupby.shift(1)` takes the PREVIOUS ROW,
+    # which is the previous year only when the bank's panel has no gap; where it
+    # does, the value would be labelled t-1 while coming from t-2.
+    prior = panel[["ticker", "year", "rit"]].rename(
+        columns={"year": "mu_source_year", "rit": "rit_prior"}
+    )
+    panel = panel.merge(prior, on=["ticker", "mu_source_year"], how="left",
+                        validate="1:1")
+    gap = panel["mu_hat"].isna() & panel["rit_prior"].between(*PLAUSIBLE_DRIFT)
+    panel.loc[gap, "mu_hat"] = panel.loc[gap, "rit_prior"]
     panel.loc[gap, "mu_from"] = "rit_tminus1_fallback"
+    panel = panel.drop(columns=["rit_prior"])
     # Provenance, and no imputation. Bharath-Shumway's drift is the firm's own
     # lagged return; where there is no prior observation there is no drift, and
-    # DD_a is left undefined rather than filled from a peer group. That costs
-    # each bank its first panel year (244 rows, one per bank) and is the reason
-    # DD_a covers fewer rows than DD_m.
+    # DD_a is left undefined rather than filled from a peer group. The loss is
+    # NOT one row per bank: the monthly file starts in 2013, so a bank listed by
+    # 2015 keeps its 2016 row. What is lost is bank-years whose prior year has
+    # no complete twelve months of returns, which the log counts per run.
     drift_lo, drift_hi = PLAUSIBLE_DRIFT
     implausible = panel["mu_hat"].notna() & ~panel["mu_hat"].between(drift_lo, drift_hi)
     panel["mu_method"] = np.where(
@@ -233,6 +257,11 @@ def build(inputs: Inputs) -> tuple[pd.DataFrame, list[str]]:
         panel["F"].to_numpy(), panel["mu_hat"].to_numpy(),
     )
     panel["DD_a"], panel["PD_a"], panel["sigma_V_hat"] = dd_a, pd_a, sigma_v_hat
+
+    # Carried on the panel, not just written to the log, so the gate can judge
+    # it. The v3.0 defect was an unverified drift; moving its source without
+    # thresholding the agreement would have left the verification a log line.
+    panel["mu_agreement"] = drift_agreement
 
     panel["barrier_convention"] = "total_liabilities"
     panel["equity_source"] = "observed_market_cap"

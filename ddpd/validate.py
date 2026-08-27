@@ -56,12 +56,23 @@ def _median(frame: pd.DataFrame, expr) -> float:
 
 
 def validate(frame: pd.DataFrame, n_expected: int | None = None) -> tuple[int, str]:
-    """Return ``(exit_code, report_text)`` for a regenerated panel."""
+    """Return ``(exit_code, report_text)`` for a regenerated panel.
+
+    ``n_expected`` is REQUIRED. Without it the coverage check silently does not
+    run, and a panel missing an entire year returns PASS; an independent review
+    demonstrated exactly that. It is a caller-supplied number, so it is not
+    proof on its own, but its absence must not be a free pass.
+    """
     rep = Report()
     rep.lines.append("DD/PD ECONOMIC ACCEPTANCE GATE")
     rep.lines.append(f"  rows in file: {len(frame)}")
 
-    required = {"ticker", "year", "F", "E", "DD_m", "PD_m", "DD_a", "PD_a",
+    # Every column the checks below index. A column absent from this set but
+    # used by a check turns a clean BLOCKED into an unhandled KeyError, and a
+    # column used only inside an `if col in frame` guard lets a producer delete
+    # the check by deleting the column.
+    required = {"ticker", "year", "F", "E", "sigma_E", "assets_usd",
+                "DD_m", "PD_m", "DD_a", "PD_a",
                 "asset_value", "asset_vol", "resid_price", "resid_vol"}
     missing = sorted(required - set(frame.columns))
     if missing:
@@ -69,7 +80,10 @@ def validate(frame: pd.DataFrame, n_expected: int | None = None) -> tuple[int, s
         return 2, "\n".join(rep.lines + [""] + [f"BLOCKED: {b}" for b in rep.blocked])
 
     converged = frame[frame["DD_m"].notna()].copy()
-    if n_expected:
+    if n_expected is None:
+        rep.block("coverage", "n_expected not supplied; cannot judge missing rows")
+        return 2, "\n".join(rep.lines + [""] + [f"BLOCKED: {b}" for b in rep.blocked])
+    if True:
         coverage = len(converged) / n_expected
         if coverage < bands.MIN_COVERAGE:
             rep.block("coverage", f"{coverage:.1%} of {n_expected} rows, floor {bands.MIN_COVERAGE:.0%}")
@@ -87,10 +101,28 @@ def validate(frame: pd.DataFrame, n_expected: int | None = None) -> tuple[int, s
              bands.MEDIAN_SIGMA_V)
     rep.band("median E/F", _median(converged, lambda d: d["E"] / d["F"]),
              bands.MEDIAN_E_OVER_F)
-    if "assets_usd" in converged.columns:
-        rep.band("median F/assets",
-                 _median(converged, lambda d: d["F"] / d["assets_usd"]),
-                 bands.MEDIAN_F_OVER_ASSETS)
+    rep.band("median F/assets",
+             _median(converged, lambda d: d["F"] / d["assets_usd"]),
+             bands.MEDIAN_F_OVER_ASSETS)
+
+    rep.lines.append("")
+    rep.lines.append("Per-year, so a defect confined to one year cannot hide in a median:")
+    worst_vf = worst_sv = None
+    for year, group in converged.groupby("year"):
+        vf = _median(group, lambda d: d["asset_value"] / d["F"])
+        sv = _median(group, lambda d: d["asset_vol"])
+        if not bands.PER_YEAR_V_OVER_F.holds(vf):
+            worst_vf = (year, vf) if worst_vf is None or abs(vf - 1.1) > abs(worst_vf[1] - 1.1) else worst_vf
+        if not bands.PER_YEAR_SIGMA_V.holds(sv):
+            worst_sv = (year, sv) if worst_sv is None else worst_sv
+        flag = "    " if (bands.PER_YEAR_V_OVER_F.holds(vf)
+                          and bands.PER_YEAR_SIGMA_V.holds(sv)) else " <- "
+        rep.lines.append(f"    {int(year)}  n={len(group):>4}  V/F {vf:>7.4f}  "
+                         f"sigma_V {sv:>7.4f}{flag}")
+    rep.check("every year within band", worst_vf is None and worst_sv is None,
+              "all years in band" if worst_vf is None and worst_sv is None
+              else f"worst: {worst_vf or worst_sv}",
+              "a barrier wrong for one year passes every panel-wide median")
 
     rep.lines.append("")
     rep.lines.append("Dependent-variable usability:")
@@ -116,10 +148,31 @@ def validate(frame: pd.DataFrame, n_expected: int | None = None) -> tuple[int, s
               f"{int((converged['asset_vol'] >= converged['sigma_E']).sum())} violations",
               "a levered firm's assets cannot be more volatile than its equity")
 
+    if "mu_agreement" in frame.columns:
+        agreement = float(frame["mu_agreement"].dropna().iloc[0]) if frame["mu_agreement"].notna().any() else float("nan")
+        rep.check("drift agrees with market cap",
+                  agreement >= bands.MIN_DRIFT_AGREEMENT,
+                  f"corr {agreement:.3f}, floor {bands.MIN_DRIFT_AGREEMENT}",
+                  "the v3.0 defect was an unverified drift; a log line is not a check")
+    else:
+        rep.check("drift agreement recorded", False,
+                  "column mu_agreement absent",
+                  "the drift must carry its own cross-source agreement, not a log line")
+
     rep.lines.append("")
     rep.lines.append("Panel integrity:")
     dupes = int(frame.duplicated(subset=["ticker", "year"]).sum())
     rep.check("unique (ticker, year)", dupes == 0, f"{dupes} duplicate keys")
+
+    # A missing INTERIOR year is caught here. A missing FIRST or LAST year is
+    # NOT, and no coverage floor can catch one either: on this panel, dropping
+    # 2023 leaves 81.4% and dropping 2016 leaves 87.1%, both above any floor
+    # that still admits the real panel at 91.6%. The per-year table above is
+    # where a human sees it. Stated rather than papered over with a tuned floor.
+    years = sorted(frame["year"].dropna().astype(int).unique())
+    gaps = [y for y in range(years[0], years[-1] + 1) if y not in years] if years else []
+    rep.check("no interior year missing", not gaps,
+              f"missing: {gaps}" if gaps else f"{years[0]}-{years[-1]} contiguous")
 
     verdict = 1 if rep.failures else 0
     tail = [""]
@@ -134,7 +187,9 @@ def validate(frame: pd.DataFrame, n_expected: int | None = None) -> tuple[int, s
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("dataset", type=Path)
-    ap.add_argument("--expected-rows", type=int, default=None)
+    ap.add_argument("--expected-rows", type=int, required=True,
+                    help="rows the panel should cover; without it the coverage "
+                         "check cannot run and a missing year would pass")
     args = ap.parse_args(argv)
 
     if not args.dataset.exists():

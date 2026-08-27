@@ -32,6 +32,11 @@ def _as_gate_schema(frame: pd.DataFrame) -> pd.DataFrame:
         "PD_a": frame["PD_m"],
         "resid_price": 0.0,
         "resid_vol": 0.0,
+        # The v3.0 files predate these columns. They are supplied so the fixture
+        # reaches the ECONOMIC bands and fails on those, rather than stopping at
+        # a schema BLOCKED, which would prove nothing about the thresholds.
+        "assets_usd": frame["F"] / 0.06,   # v3.0 barrier was ~6% of assets
+        "mu_agreement": 0.939,
     })
     return out.drop_duplicates(subset=["ticker", "year"])
 
@@ -42,12 +47,12 @@ def legacy():
 
 
 def test_gate_fails_on_legacy_output(legacy):
-    code, report = validate(legacy)
+    code, report = validate(legacy, n_expected=1424)
     assert code == 1, f"gate passed the known-defective v3.0 dataset:\n{report}"
 
 
 def test_gate_names_the_barrier_as_the_reason(legacy):
-    _, report = validate(legacy)
+    _, report = validate(legacy, n_expected=1424)
     assert "median V/F" in report
     assert "FAIL" in report
 
