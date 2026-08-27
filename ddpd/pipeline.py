@@ -191,8 +191,14 @@ def build(inputs: Inputs) -> tuple[pd.DataFrame, list[str]]:
         panel["mu_hat"] = np.nan
         panel["mu_from"] = ""
 
-    # `rit` is retained only as a last resort, and only where it is plausible,
-    # so a bank absent from the monthly file is not silently dropped.
+    # `rit` as a last resort, and only where it is plausible.
+    #
+    # NOTE: since scripts/04_rebuild_annual_returns_and_ff.py rebuilt `rit` from
+    # the monthly file, this path is inert on the shipped data: where the
+    # monthly file has no year, the rebuilt `rit` has none either, so there is
+    # nothing to fall back to. It fires only against a Book2 whose `rit` comes
+    # from some other source. Kept for that case, and counted in the log so its
+    # being zero is visible rather than assumed.
     # Year-exact, not a row shift. `groupby.shift(1)` takes the PREVIOUS ROW,
     # which is the previous year only when the bank's panel has no gap; where it
     # does, the value would be labelled t-1 while coming from t-2.
@@ -205,6 +211,7 @@ def build(inputs: Inputs) -> tuple[pd.DataFrame, list[str]]:
     panel.loc[gap, "mu_hat"] = panel.loc[gap, "rit_prior"]
     panel.loc[gap, "mu_from"] = "rit_tminus1_fallback"
     panel = panel.drop(columns=["rit_prior"])
+    log.append(f"drift fallback to rit used on {int(gap.sum())} rows")
     # Provenance, and no imputation. Bharath-Shumway's drift is the firm's own
     # lagged return; where there is no prior observation there is no drift, and
     # DD_a is left undefined rather than filled from a peer group. The loss is
